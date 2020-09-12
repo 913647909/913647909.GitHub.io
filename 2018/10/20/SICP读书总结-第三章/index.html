@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+  <link rel="alternate" href="/atom.xml" title="MisakaTang's Blog" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2">
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="Even while it changes, it stands still   前言第三章的阅读之路也算是比较漫长了,和计划的SICP进度可能还是差距很大,但是好歹也是在慢慢推进了..第三章内容算是比较杂的但是挺重要的吧,特别是在这个流和分布式被越来越重视的8102年,而且在工作之后再来看这些问题也是有很多的新收获,确实很多知识虽然过了几十年,其实本质上是没有什么变化的,而我的感觉就是SICP">
+<meta name="keywords" content="函数式编程,SICP,Lisp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SICP读书总结-第三章">
+<meta property="og:url" content="http://misakatang.cn/2018/10/20/SICP读书总结-第三章/index.html">
+<meta property="og:site_name" content="MisakaTang&#39;s Blog">
+<meta property="og:description" content="Even while it changes, it stands still   前言第三章的阅读之路也算是比较漫长了,和计划的SICP进度可能还是差距很大,但是好歹也是在慢慢推进了..第三章内容算是比较杂的但是挺重要的吧,特别是在这个流和分布式被越来越重视的8102年,而且在工作之后再来看这些问题也是有很多的新收获,确实很多知识虽然过了几十年,其实本质上是没有什么变化的,而我的感觉就是SICP">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://img.alicdn.com/imgextra/i2/581166664/TB2WwebiVXXXXcxXXXXXXXXXXXX_!!581166664.png">
+<meta property="og:image" content="https://img.alicdn.com/imgextra/i1/581166664/TB2mo5iiVXXXXa.XXXXXXXXXXXX_!!581166664.png">
+<meta property="og:image" content="https://i.loli.net/2018/10/20/5bcaee4fd0b08.png">
+<meta property="og:image" content="https://img.alicdn.com/imgextra/i3/581166664/TB27OhWiVXXXXcjXpXXXXXXXXXX_!!581166664.png">
+<meta property="og:image" content="https://img.alicdn.com/imgextra/i1/581166664/TB2G54UiVXXXXcNXpXXXXXXXXXX_!!581166664.png">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/753800a6ly1fwesz6wx4qj20g705d0te.jpg">
+<meta property="og:image" content="https://img.alicdn.com/imgextra/i2/581166664/TB2O48ZiVXXXXcnXpXXXXXXXXXX_!!581166664.png">
+<meta property="og:image" content="https://img.alicdn.com/imgextra/i1/581166664/TB2jEGbiVXXXXXDXpXXXXXXXXXX_!!581166664.png">
+<meta property="og:image" content="https://img.alicdn.com/imgextra/i3/581166664/TB2lzajiVXXXXcHXXXXXXXXXXXX_!!581166664.png">
+<meta property="og:image" content="https://img.alicdn.com/imgextra/i2/581166664/TB2KcaeiVXXXXXtXpXXXXXXXXXX_!!581166664.png">
+<meta property="og:image" content="https://img.alicdn.com/imgextra/i4/581166664/TB2o7KviVXXXXarXXXXXXXXXXXX_!!581166664.png">
+<meta property="og:updated_time" content="2020-09-12T05:04:59.741Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SICP读书总结-第三章">
+<meta name="twitter:description" content="Even while it changes, it stands still   前言第三章的阅读之路也算是比较漫长了,和计划的SICP进度可能还是差距很大,但是好歹也是在慢慢推进了..第三章内容算是比较杂的但是挺重要的吧,特别是在这个流和分布式被越来越重视的8102年,而且在工作之后再来看这些问题也是有很多的新收获,确实很多知识虽然过了几十年,其实本质上是没有什么变化的,而我的感觉就是SICP">
+<meta name="twitter:image" content="https://img.alicdn.com/imgextra/i2/581166664/TB2WwebiVXXXXcxXXXXXXXXXXXX_!!581166664.png">
+  <link rel="canonical" href="http://misakatang.cn/2018/10/20/SICP读书总结-第三章/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>SICP读书总结-第三章 | MisakaTang's Blog</title>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-147618435-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-147618435-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">MisakaTang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-wiki">
+      
+    
+
+    <a href="/wiki/" rel="section"><i class="menu-item-icon fa fa-fw fa-book"></i> <br>WiKi</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/TangMisaka23001" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://misakatang.cn/2018/10/20/SICP读书总结-第三章/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="MisakaTang">
+      <meta itemprop="description" content="The limits of my language are the limits of my world">
+      <meta itemprop="image" content="/images/misaka.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MisakaTang's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">SICP读书总结-第三章
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2018-10-20 15:51:54" itemprop="dateCreated datePublished" datetime="2018-10-20T15:51:54+00:00">2018-10-20</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-12 05:04:59" itemprop="dateModified" datetime="2020-09-12T05:04:59+00:00">2020-09-12</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/分类/笔记/" itemprop="url" rel="index"><span itemprop="name">笔记</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span id="/2018/10/20/SICP读书总结-第三章/" class="post-meta-item leancloud_visitors" data-flag-title="SICP读书总结-第三章" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>Even while it changes, it stands still</p>
+</blockquote>
+<hr>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>第三章的阅读之路也算是比较漫长了,和计划的SICP进度可能还是差距很大,但是好歹也是在慢慢推进了..第三章内容算是比较杂的但是挺重要的吧,特别是在这个流和分布式被越来越重视的8102年,而且在工作之后再来看这些问题也是有很多的新收获,确实很多知识虽然过了几十年,其实本质上是没有什么变化的,而我的感觉就是SICP提供给我一种从语言的角度来看待计算机问题的角度,从而使得对很多问题的思考更加全面和多样了.<br><a id="more"></a></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>在前两章的基础上,在我们构建系统的时候,还需要一些知识来使得我们在构建大型的系统时使得系统更具模块性,我们希望这种策略能够在有新的对象或者动作添加进系统的时候不需要修改原有的代码,只需要加一些额外的代码(symbolic analogs)就能够解决问题.</p>
+<p>在我们构建系统的时候有两种看待事物的角度:</p>
+<ul>
+<li>第一种是把一个大型系统视为对象的集合,而对象的行为可能随时间变化</li>
+<li>第二种是像电子工程师一样把系统看作是信号处理系统,把系统看成是信号在元件之间流动.</li>
+</ul>
+<h2 id="赋值和局部状态"><a href="#赋值和局部状态" class="headerlink" title="赋值和局部状态"></a>赋值和局部状态</h2><p>看待系统中状态变化的一种观点是:状态变化可以被分组成几个紧密相关的子系统并且子系统之间的关系要保持松散.这也就导致我们想到要使得每个对象都有其局部的状态(local state varibles)</p>
+<h3 id="引入set"><a href="#引入set" class="headerlink" title="引入set!"></a>引入set!</h3><p>比如在取钱的时候,我们的流程应该是下面这样的:假设我们有100块钱<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">(withdraw 25)</span><br><span class="line">75</span><br><span class="line">(withdraw 25)</span><br><span class="line">50</span><br><span class="line">(withdraw 60)</span><br><span class="line">&quot;Insufficient funds&quot;</span><br><span class="line">(withdraw 15)</span><br><span class="line">35</span><br></pre></td></tr></table></figure></p>
+<p>而这样的求值方式前面没有状态的函数肯定是做不到的了,因为每次调用相同的函数都会产生不同的结果了.这时候就需要引入<strong>赋值</strong>,也就是set!.代码的实现如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">(define balance 100)</span><br><span class="line">(define (withdraw amount)</span><br><span class="line">    (if (&gt;= balance amount)</span><br><span class="line">        (begin (set! balance (- balance amount))</span><br><span class="line">            balance)</span><br><span class="line">        &quot;Insufficient founds&quot;))</span><br></pre></td></tr></table></figure></p>
+<p>而set!的引入也导致前面的替换模型的规则就失效了.因为balance变成了一个绑定在全局环境里的变量.</p>
+<h3 id="引入赋值的好处"><a href="#引入赋值的好处" class="headerlink" title="引入赋值的好处"></a>引入赋值的好处</h3><blockquote>
+<p>It is tempting to conclude this discussion by saying that, by introducing assignment and the technique of hiding state in local variables, we are able to structure systems in a more modular fashion than if all state had to be manipulated explicitly, by passing additional parameters.</p>
+</blockquote>
+<p>通过局部状态可以使得我们更加模块化的来构建系统.</p>
+<h3 id="引入赋值的代价"><a href="#引入赋值的代价" class="headerlink" title="引入赋值的代价"></a>引入赋值的代价</h3><p>那么,代价是什么呢?</p>
+<ol>
+<li>替换模型在这里不再适用了</li>
+<li>由于引入了赋值,函数的执行顺序变得重要了,我们也失去了函数式编程的一部分优雅</li>
+<li>我们不得不接受命令式编程一样的复杂性</li>
+</ol>
+<blockquote>
+<p>programming with assignment forces us to carefully consider the relative orders of the assignments to make sure that each statement is using the correct version of the variables that have been changed.This issue simply does not arise in functional programs</p>
+</blockquote>
+<h2 id="求值的环境模型"><a href="#求值的环境模型" class="headerlink" title="求值的环境模型"></a>求值的环境模型</h2><p>为了应付set!这个需求,我们需要引入一个叫做环境的结构,环境就是一系列的帧(frames)构成的.而相对应的,环境模型的求值规则是:</p>
+<ol>
+<li>Evaluate the subexpressions of the combination.</li>
+<li>Apply the value of the operator subexpression to the values of the operand subexpressions.</li>
+</ol>
+<p>大致就是为每一个子表达式创建一个自己的环境,然后绑定它的父表达式,子表达式内的变量自己用,求值的时候的感觉就是自底向上求值.</p>
+<h3 id="用帧来存储局部状态"><a href="#用帧来存储局部状态" class="headerlink" title="用帧来存储局部状态"></a>用帧来存储局部状态</h3><p>根据上面的规则翻译一下上面从银行取钱的函数就是这样的:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">(define (make-withdraw balance)</span><br><span class="line">  (lambda (amount)</span><br><span class="line">    (if (&gt; amount balance)</span><br><span class="line">      &quot;Insufficient&quot;</span><br><span class="line">      (begin</span><br><span class="line">        (set! balance (- balance amount))</span><br><span class="line">        balance))))</span><br><span class="line"></span><br><span class="line">(define W1 (make-withdraw 100))</span><br><span class="line">(W1 50)</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://img.alicdn.com/imgextra/i2/581166664/TB2WwebiVXXXXcxXXXXXXXXXXXX_!!581166664.png" alt=""></p>
+<p>求值<code>(W1 50)</code>的过程如下图:</p>
+<p><img src="https://img.alicdn.com/imgextra/i1/581166664/TB2mo5iiVXXXXa.XXXXXXXXXXXX_!!581166664.png" alt=""></p>
+<p>环境模型解释了使得局部过程定义变成模块化编程中实用技巧的两个关键特性:</p>
+<ul>
+<li>局部过程被绑定在自己的帧中,只在运行时被创建,优于全部绑定在全局变量中的方式</li>
+<li>局部过程可以轻松访问绑定环境中的参数,因为这是一个对其封闭的过程.</li>
+</ul>
+<h2 id="对可变的数据进行模块化"><a href="#对可变的数据进行模块化" class="headerlink" title="对可变的数据进行模块化"></a>对可变的数据进行模块化</h2><p>主要还是讲一些数据结构,但是使用了新的技术.</p>
+<h3 id="Mutable-List-Structure"><a href="#Mutable-List-Structure" class="headerlink" title="Mutable List Structure"></a>Mutable List Structure</h3><p>主要是借助set!来实现对List进行可变的操作.下图就是把x的cdr变成y的图片(set-cdr! x y)</p>
+<p><img src="https://i.loli.net/2018/10/20/5bcaee4fd0b08.png" alt=""></p>
+<h3 id="表示队列"><a href="#表示队列" class="headerlink" title="表示队列"></a>表示队列</h3><p>队列的概念和操作就不写了,大致就是用set!来修改队首和队尾来实现一个队列.</p>
+<p><img src="https://img.alicdn.com/imgextra/i3/581166664/TB27OhWiVXXXXcjXpXXXXXXXXXX_!!581166664.png" alt=""></p>
+<h3 id="表示表格-Tables"><a href="#表示表格-Tables" class="headerlink" title="表示表格(Tables)"></a>表示表格(Tables)</h3><p>key-value的形式,和字典或者JSON比较相似.</p>
+<p><img src="https://img.alicdn.com/imgextra/i1/581166664/TB2G54UiVXXXXcNXpXXXXXXXXXX_!!581166664.png" alt=""></p>
+<h3 id="模拟数字电路"><a href="#模拟数字电路" class="headerlink" title="模拟数字电路"></a>模拟数字电路</h3><p>这也就是开始提到的使用电子工程师的眼光来看待问题的例子,在课程上老师也讲到了他认为电气系统是最完美的系统.</p>
+<p>用与非门来构造一个半加器:</p>
+<p><img src="https://ws1.sinaimg.cn/large/753800a6ly1fwesz6wx4qj20g705d0te.jpg" alt=""><br><img src="https://img.alicdn.com/imgextra/i2/581166664/TB2O48ZiVXXXXcnXpXXXXXXXXXX_!!581166664.png" alt=""></p>
+<p>数字电路的优势就在于可以使用简单的模块构造出具有复杂功能的模块,然后使用复杂的模块构造出更复杂的模块,比较类似于第一章讲到pair时pair的闭包性质一样.</p>
+<p>而数字电路设计的难点就在于信号在电路中的传输是有延迟的.</p>
+<h3 id="约束传播"><a href="#约束传播" class="headerlink" title="约束传播"></a>约束传播</h3><p>在之前我们都把代码组织成单向的计算,而这里就举了一个可以从任何方向来求值的约束传播的例子.</p>
+<p><img src="https://img.alicdn.com/imgextra/i1/581166664/TB2jEGbiVXXXXXDXpXXXXXXXXXX_!!581166664.png" alt=""></p>
+<p>而这其实也是一种新的抽象问题的方式.</p>
+<h2 id="并发-时间是本质问题"><a href="#并发-时间是本质问题" class="headerlink" title="并发:时间是本质问题"></a>并发:时间是本质问题</h2><blockquote>
+<p>The central issue lurking beneath the complexity of state, sameness, and change is that by introducing assigment we forced to admit time to our computational models.</p>
+</blockquote>
+<blockquote>
+<p>what makes this complicated is that more than one process may be trying to manipulate the shared state at the same time.</p>
+</blockquote>
+<p>一个两个人同时从银行中取钱的例子:</p>
+<p><img src="https://img.alicdn.com/imgextra/i3/581166664/TB2lzajiVXXXXcHXXXXXXXXXXXX_!!581166664.png" alt=""></p>
+<p>使得事情变得复杂的原因就在于多个进程可以同时操作同一个共享的状态,重要的就是如何<strong>保证操作的原子性</strong>,一种解决的办法就是使用<strong>Serializer</strong>(串行化),也就是类似于锁的机制.</p>
+<p>而一旦引入了锁也就会有<strong>deadlock</strong>(死锁)的存在(这里就略过).</p>
+<h3 id="并发-时间和交流"><a href="#并发-时间和交流" class="headerlink" title="并发,时间和交流"></a>并发,时间和交流</h3><blockquote>
+<p>The basic phenomenon here is that synchronizing different processes, establishing shared state, or imposing an order on events requires communication among the process.</p>
+</blockquote>
+<p>一旦涉及到并发也就涉及到了通讯的问题,也就是进程之间分享同一个状态的方式,当然这就有很多的取舍可以做了,是要大家都能同时获取状态的变化还是可以延时获取状态的变化,而这个问题到了分布式中就会变得越发的明显,而Hadoop最大的性能瓶颈其实也就是在于网络的IO.</p>
+<blockquote>
+<p>从本质上看,在并发控制中,任何时间概念都必然与通信有内在的密切联系.有意思的是,时间与通信之间的这种联系也出现在相对论里,在那里的光速(可能用于同步事件的最快信号)是与时间和空间有关的基本常量.在处理时间和状态时,我们在计算模型领域所遭遇的复杂性,事实上,可能就是物理世界中最基本的复杂性的一种反映.</p>
+</blockquote>
+<p>可能这就是科学的共性吧.虽然感觉有点玄乎,但是这也是SICP的魅力所在吧.</p>
+<h2 id="Streams-流"><a href="#Streams-流" class="headerlink" title="Streams(流)"></a>Streams(流)</h2><blockquote>
+<p>streams are a clever idea that allows one to use sequence manipulations without incurring the cost of manipulating sequence as lists.</p>
+</blockquote>
+<p>简单的说流就是延时求值,也可以说是需求驱动(demand-driven)的,就是你要一个就给你一个,Python中的yield就是这种感觉.</p>
+<h3 id="Infinite-Streams"><a href="#Infinite-Streams" class="headerlink" title="Infinite Streams"></a>Infinite Streams</h3><p>而使用<code>delay</code>和<code>force</code>来实现延时求值也使得我们可以做一些以前办不到的事,比如一个表示正整数的无穷流:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(define (integers-starting-from n)</span><br><span class="line">  (cons-stream n (integers-starting-from (+ n 1))))</span><br><span class="line">(define integers (integers-starting-from 1))</span><br></pre></td></tr></table></figure></p>
+<h3 id="信号系统中的流"><a href="#信号系统中的流" class="headerlink" title="信号系统中的流"></a>信号系统中的流</h3><p>把积分过程看作是一个信号处理系统:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">(define (integral integrand initial-value dt)</span><br><span class="line">    (define int</span><br><span class="line">        (cons-stream initial-value</span><br><span class="line">            (add-streams (scale-stream integrand dt)</span><br><span class="line">                            int)))</span><br><span class="line">int)</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://img.alicdn.com/imgextra/i2/581166664/TB2KcaeiVXXXXXtXpXXXXXXXXXX_!!581166664.png" alt=""></p>
+<h3 id="函数式编程的模块化和对象的模块化"><a href="#函数式编程的模块化和对象的模块化" class="headerlink" title="函数式编程的模块化和对象的模块化"></a>函数式编程的模块化和对象的模块化</h3><p>如果我们把合并请求交易模块化的话,就像下面这样:</p>
+<p><img src="https://img.alicdn.com/imgextra/i4/581166664/TB2o7KviVXXXXarXXXXXXXXXXXX_!!581166664.png" alt=""></p>
+<p>问题在于我们每次都要接收Peter和Paul的请求才能进行一次合并,如果两个人请求的频率相差很大的话,那么频繁请求的人就会堆积很多请求不能处理,而一旦引入显式的同步来保证事件发生顺序的正确性的话,又会引入函数式编程中的一个大问题(因为显式同步引入了赋值和时间,这是函数式编程想避免的):也就是在没有时间这个属性的情况下如何去”公平”的合并两个请求.</p>
+<h1 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h1><blockquote>
+<p>We can model the world as a collection of separate, time-bound, interacting objects with state, or we can model the world as a single, timeless, stateless unity.</p>
+</blockquote>
+<p>我们面临的不是编程方法的挑战,而是两种不同的世界观的挑战,看待世界不同的方法导致了OO和FP两种分支,如果两个分支在将来能够融合的话是坠吼的.</p>
+<blockquote>
+<p>你问我支不支持,我肯定是支持的</p>
+</blockquote>
+<p>第三章的总结也到此结束了,可以说在SICP的这一段历程是玄幻的和充满乐趣的,这也是这本魔法书的魅力所在吧.而在项目中遇到的包括并发,分布式的问题也增加了对这些CS中基本的问题的思考:</p>
+<blockquote>
+<p>吾尝终日而思矣,不如须臾之所学也</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/标签/函数式编程/" rel="tag"># 函数式编程</a>
+            
+              <a href="/标签/SICP/" rel="tag"># SICP</a>
+            
+              <a href="/标签/Lisp/" rel="tag"># Lisp</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2018/10/18/补充-在MockMvc中使用各种POST提交数据的方式/" rel="next" title="补充:在MockMvc中使用各种POST提交数据的方式">
+                  <i class="fa fa-chevron-left"></i> 补充:在MockMvc中使用各种POST提交数据的方式
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2018/11/03/不动点-递归-二进制-奇妙的分形三角形/" rel="prev" title="不动点,递归,二进制--奇妙的分形三角形">
+                  不动点,递归,二进制--奇妙的分形三角形 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">2.</span> <span class="nav-text">总结</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#赋值和局部状态"><span class="nav-number">2.1.</span> <span class="nav-text">赋值和局部状态</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#引入set"><span class="nav-number">2.1.1.</span> <span class="nav-text">引入set!</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#引入赋值的好处"><span class="nav-number">2.1.2.</span> <span class="nav-text">引入赋值的好处</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#引入赋值的代价"><span class="nav-number">2.1.3.</span> <span class="nav-text">引入赋值的代价</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#求值的环境模型"><span class="nav-number">2.2.</span> <span class="nav-text">求值的环境模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#用帧来存储局部状态"><span class="nav-number">2.2.1.</span> <span class="nav-text">用帧来存储局部状态</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对可变的数据进行模块化"><span class="nav-number">2.3.</span> <span class="nav-text">对可变的数据进行模块化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Mutable-List-Structure"><span class="nav-number">2.3.1.</span> <span class="nav-text">Mutable List Structure</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#表示队列"><span class="nav-number">2.3.2.</span> <span class="nav-text">表示队列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#表示表格-Tables"><span class="nav-number">2.3.3.</span> <span class="nav-text">表示表格(Tables)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模拟数字电路"><span class="nav-number">2.3.4.</span> <span class="nav-text">模拟数字电路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#约束传播"><span class="nav-number">2.3.5.</span> <span class="nav-text">约束传播</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#并发-时间是本质问题"><span class="nav-number">2.4.</span> <span class="nav-text">并发:时间是本质问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#并发-时间和交流"><span class="nav-number">2.4.1.</span> <span class="nav-text">并发,时间和交流</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Streams-流"><span class="nav-number">2.5.</span> <span class="nav-text">Streams(流)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Infinite-Streams"><span class="nav-number">2.5.1.</span> <span class="nav-text">Infinite Streams</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#信号系统中的流"><span class="nav-number">2.5.2.</span> <span class="nav-text">信号系统中的流</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#函数式编程的模块化和对象的模块化"><span class="nav-number">2.5.3.</span> <span class="nav-text">函数式编程的模块化和对象的模块化</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结-1"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" src="/images/misaka.jpg" alt="MisakaTang">
+  <p class="site-author-name" itemprop="name">MisakaTang</p>
+  <div class="site-description" itemprop="description">The limits of my language are the limits of my world</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/归档">
+        
+          <span class="site-state-item-count">77</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">65</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/TangMisaka23001" title="GitHub &rarr; https://github.com/TangMisaka23001" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:mikasatang@gmail.com" title="E-Mail &rarr; mailto:mikasatang@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://www.douban.com/people/misakatang/" title="豆瓣主页 &rarr; https://www.douban.com/people/misakatang/" rel="noopener" target="_blank"><i class="fa fa-fw fa-globe"></i>豆瓣主页</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://xiaoshidefeng.github.io/" title="https://xiaoshidefeng.github.io/" rel="noopener" target="_blank">ChenWei的博客</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://blog.bbchen.top/" title="http://blog.bbchen.top/" rel="noopener" target="_blank">BB chen的漂流记</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://blog.zhuzhenyuan.cn/" title="http://blog.zhuzhenyuan.cn/" rel="noopener" target="_blank">Aurthur_的博客</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://pyking.cn/" title="http://pyking.cn/" rel="noopener" target="_blank">1ni的博客</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MisakaTang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+  
+  <script>
+  function leancloudSelector(url) {
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = visitors.getAttribute('id').trim();
+      var title = visitors.getAttribute('data-flag-title').trim();
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+            
+              .catch(error => {
+                console.log('Failed to save visitor count', error);
+              })
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.log('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return element.getAttribute('id').trim();
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.url;
+            var time = item.time;
+            leancloudSelector(url).innerText = time;
+          }
+          for (var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.log('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=M1hXHB2YJ8SC7uPYi7vsCKwU-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id': 'M1hXHB2YJ8SC7uPYi7vsCKwU-gzGzoHsz',
+            'X-LC-Key': '5Ks1w8pWHHdOYOrOYiU4SX1l',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        const localhost = /http:\/\/(localhost|127.0.0.1|0.0.0.0)/;
+        if (localhost.test(document.URL)) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+    
+  
+  <script color="0,0,255" opacity="0.5" zindex="-1" count="99" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

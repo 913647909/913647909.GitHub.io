@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+  <link rel="alternate" href="/atom.xml" title="MisakaTang's Blog" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2">
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="写在前面在看了许多CI的内容之后,正好碰上公司尝试把应用容器化以及进行持续集成(之前还是需要手动执行启停脚本),然后我便成了第一个吃螃蟹的人,在一阵折腾之后也勉强算是把整个流程给走通了便在这里记录一下大致的流程和踩到的坑,也是对最近许久不更新的博客增加一些新东西吧. 部署流程首先描述一下整个部署的流程来理清一下整个逻辑，这里仅仅是给出我自己的暂时的解决方案，由于业务和环境的不同必定没有完全一样的流">
+<meta name="keywords" content="Jenkins,docker,CI">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用Jenkins pipeline(流水线)实现SpringBoot Application的docker构建和持续集成(CI)">
+<meta property="og:url" content="http://misakatang.cn/2019/10/11/jenkins-docker-deploy-spring-app/index.html">
+<meta property="og:site_name" content="MisakaTang&#39;s Blog">
+<meta property="og:description" content="写在前面在看了许多CI的内容之后,正好碰上公司尝试把应用容器化以及进行持续集成(之前还是需要手动执行启停脚本),然后我便成了第一个吃螃蟹的人,在一阵折腾之后也勉强算是把整个流程给走通了便在这里记录一下大致的流程和踩到的坑,也是对最近许久不更新的博客增加一些新东西吧. 部署流程首先描述一下整个部署的流程来理清一下整个逻辑，这里仅仅是给出我自己的暂时的解决方案，由于业务和环境的不同必定没有完全一样的流">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-09-12T05:04:59.741Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="用Jenkins pipeline(流水线)实现SpringBoot Application的docker构建和持续集成(CI)">
+<meta name="twitter:description" content="写在前面在看了许多CI的内容之后,正好碰上公司尝试把应用容器化以及进行持续集成(之前还是需要手动执行启停脚本),然后我便成了第一个吃螃蟹的人,在一阵折腾之后也勉强算是把整个流程给走通了便在这里记录一下大致的流程和踩到的坑,也是对最近许久不更新的博客增加一些新东西吧. 部署流程首先描述一下整个部署的流程来理清一下整个逻辑，这里仅仅是给出我自己的暂时的解决方案，由于业务和环境的不同必定没有完全一样的流">
+  <link rel="canonical" href="http://misakatang.cn/2019/10/11/jenkins-docker-deploy-spring-app/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>用Jenkins pipeline(流水线)实现SpringBoot Application的docker构建和持续集成(CI) | MisakaTang's Blog</title>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-147618435-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-147618435-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">MisakaTang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-wiki">
+      
+    
+
+    <a href="/wiki/" rel="section"><i class="menu-item-icon fa fa-fw fa-book"></i> <br>WiKi</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/TangMisaka23001" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://misakatang.cn/2019/10/11/jenkins-docker-deploy-spring-app/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="MisakaTang">
+      <meta itemprop="description" content="The limits of my language are the limits of my world">
+      <meta itemprop="image" content="/images/misaka.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MisakaTang's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">用Jenkins pipeline(流水线)实现SpringBoot Application的docker构建和持续集成(CI)
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-10-11 10:27:32" itemprop="dateCreated datePublished" datetime="2019-10-11T10:27:32+00:00">2019-10-11</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-12 05:04:59" itemprop="dateModified" datetime="2020-09-12T05:04:59+00:00">2020-09-12</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/分类/技术教程/" itemprop="url" rel="index"><span itemprop="name">技术教程</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span id="/2019/10/11/jenkins-docker-deploy-spring-app/" class="post-meta-item leancloud_visitors" data-flag-title="用Jenkins pipeline(流水线)实现SpringBoot Application的docker构建和持续集成(CI)" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h1><p>在看了许多CI的内容之后,正好碰上公司尝试把应用容器化以及进行持续集成(之前还是需要手动执行启停脚本),然后我便成了第一个吃螃蟹的人,在一阵折腾之后也勉强算是把整个流程给走通了便在这里记录一下大致的流程和踩到的坑,也是对最近许久不更新的博客增加一些新东西吧.</p>
+<h1 id="部署流程"><a href="#部署流程" class="headerlink" title="部署流程"></a>部署流程</h1><p>首先描述一下整个部署的流程来理清一下整个逻辑，这里仅仅是给出我自己的暂时的解决方案，由于业务和环境的不同必定没有完全一样的流程，并且这也只是暂时的方案还是有很多可以优化的地方。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">更新代码 ==&gt; 触发Jenkins流水线的构建 ==&gt; Maven打包项目 ==&gt; 制作docker image ==&gt; </span><br><span class="line">上传image(这里使用阿里的镜像服务) ==&gt; 远程服务器执行部署脚本 ==&gt; 判断部署状态(nacos api)</span><br></pre></td></tr></table></figure>
+<p>需要注意的是：</p>
+<ol>
+<li>项目的仓库中包含了Jenkinsfile和部署的脚本(全部交由版本控制)</li>
+<li>由于线上服务器为阿里ECS并且外网无法访问，所以使用了部署服务器(外网IP)来做跳转和部署</li>
+<li>因为项目使用了SpringCloud的微服务框架并且使用了NACOS注册中心，所以在服务的优雅下线重启阶段使用了nacos的服务调度API并没有使用SpringCloud自带的端点，当然本质都是通过接口调用告知注册中心下线服务</li>
+<li>由于线上服务器均没有使用root用户来发布应用所以在这里踩了小坑，暂时的解决方案可能并不完美<a id="more"></a>
+<h1 id="Jenkins"><a href="#Jenkins" class="headerlink" title="Jenkins"></a>Jenkins</h1><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2>官方教程的链接：<a href="https://jenkins.io/doc/book/installing/" target="_blank" rel="noopener">Installing Jenkins</a></li>
+</ol>
+<p>当然这里还是用了docker安装的方式，官方的命令如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">docker run \</span><br><span class="line">  -u root \ </span><br><span class="line">  --rm \ </span><br><span class="line">  -d \ </span><br><span class="line">  -p 8080:8080 \ </span><br><span class="line">  -p 50000:50000 \ </span><br><span class="line">  -v jenkins-data:/var/jenkins_home \ </span><br><span class="line">  -v /var/run/docker.sock:/var/run/docker.sock \ </span><br><span class="line">  jenkinsci/blueocean</span><br></pre></td></tr></table></figure></p>
+<p>最主要的命令还是两个-v的参数了，一个是指定Jenkins文件的存放位置，第二个则是<strong>docker in docker</strong>的关键命令了，这个挂载能够让安装在docker里的Jenkins使用docker命令。</p>
+<h3 id="not-work？"><a href="#not-work？" class="headerlink" title="not work？"></a>not work？</h3><p>没错，这个命令在我司的服务器上并没有生效，可能是因为安装的docker版本过低的原因，在一番面向Google编程之后找到了如下的方式：<a href="https://medium.com/@manav503/how-to-build-docker-images-inside-a-jenkins-container-d59944102f30" target="_blank" rel="noopener">How to build docker images inside a Jenkins container.</a>，本质还是docker in docker，不过需要自己制作镜像，Dockerfile文件如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">FROM docker.io/jenkins/jenkins:latest</span><br><span class="line"></span><br><span class="line">USER root</span><br><span class="line">RUN apt-get update -qq \</span><br><span class="line">    &amp;&amp; apt-get install -qqy apt-transport-https ca-certificates curl gnupg2 software-properties-common </span><br><span class="line">RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -</span><br><span class="line">RUN add-apt-repository \</span><br><span class="line">   &quot;deb [arch=amd64] https://download.docker.com/linux/debian \</span><br><span class="line">   $(lsb_release -cs) \</span><br><span class="line">   stable&quot;</span><br><span class="line">RUN apt-get update  -qq \</span><br><span class="line">    &amp;&amp; apt-get install docker-ce=17.12.1~ce-0~debian -y</span><br><span class="line">RUN usermod -aG docker jenkins</span><br></pre></td></tr></table></figure></p>
+<p>构建镜像命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker image build -t jenkins-docker .</span><br></pre></td></tr></table></figure></p>
+<p>docker run 命令和上面一样</p>
+<h2 id="pipeline（流水线）"><a href="#pipeline（流水线）" class="headerlink" title="pipeline（流水线）"></a>pipeline（流水线）</h2><p>官方的文档：<a href="https://jenkins.io/zh/doc/book/pipeline/syntax/" target="_blank" rel="noopener">流水线语法</a></p>
+<p>在自己实践的过程中踩了不少的坑，到最后还是发现官方文档最靠谱，所以有什么解决不了的问题还是先求助官方文档为上。</p>
+<p>这里给出测试和生产两个环境的Jenkinsfile用于参考：</p>
+<p>测试环境<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br></pre></td><td class="code"><pre><span class="line">/*</span><br><span class="line">在接触Jenkins流水线的时候最迷惑的就是语法中的pipelinee和node两种组织形式，</span><br><span class="line">一开始使用的是pipeline，但是在看文档的时候又有很多node的写法就感到非常的难受，</span><br><span class="line">总体感觉上node的写法似乎支持更多的插件并且语法更友好但是发现的时候已经差不多写完了也就没有更改</span><br><span class="line">*/</span><br><span class="line">def host() &#123;</span><br><span class="line">    def remote = [:]</span><br><span class="line">    remote.name = &apos;test&apos;</span><br><span class="line">    remote.host = &apos;xxxx&apos;</span><br><span class="line">    remote.user = &apos;xxx&apos;</span><br><span class="line">    remote.password = &apos;xxxx&apos;</span><br><span class="line">    remote.allowAnyHosts = true</span><br><span class="line">    return remote</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">pipeline &#123;</span><br><span class="line"></span><br><span class="line">    agent any</span><br><span class="line"></span><br><span class="line">    environment &#123;</span><br><span class="line">        // 这里主要是配置整个流水线所需要的变量，核心思想是要复用流水线和部署脚本的代码而只更改参数</span><br><span class="line">        ENV = &apos;xx&apos;</span><br><span class="line">        SERVICE_NAME = &apos;xx&apos;</span><br><span class="line">        SERVER_IP = &apos;xx&apos;</span><br><span class="line">        SERVER_PORT = &apos;xx&apos;</span><br><span class="line">        SERVER_USER = &apos;xx&apos;</span><br><span class="line">        SERVICE_VERSION = &apos;xx&apos;</span><br><span class="line">        DOCKER_REPO = &apos;xx&apos;</span><br><span class="line">        DOCKER_NAMESPACE = &apos;xx&apos;</span><br><span class="line">        DOCKER_USERNAME = &apos;xx&apos;</span><br><span class="line">        DOCKER_PASSWORD = &apos;xx&apos;</span><br><span class="line">        NACOS_IP = &apos;xx&apos;</span><br><span class="line">        NAMESPACE_ID = &apos;xx&apos;</span><br><span class="line">        // jvm参数</span><br><span class="line">        JAVA_OPTS = &apos;xx&apos;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    stages &#123;</span><br><span class="line">        stage(&apos;构建MAVEN项目&apos;) &#123;</span><br><span class="line">            agent &#123;</span><br><span class="line">                // docker in docker就是应用在这里了，使用maven的docker镜像来执行构建</span><br><span class="line">                docker &#123;</span><br><span class="line">                    image &apos;maven:3-alpine&apos;</span><br><span class="line">                    // 映射本地的maven仓库到docker里防止每次都去远程仓库下载jar</span><br><span class="line">                    args &apos;-v /var/jenkins_home/.m2:/root/.m2&apos;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            steps &#123;</span><br><span class="line">                // maven package</span><br><span class="line">                sh &apos;mvn clean install -Dmaven.test.skip=true -Dproject.type=jar -Ptest package&apos;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        stage(&apos;构建docker镜像&apos;) &#123;</span><br><span class="line">            agent &#123;</span><br><span class="line">                docker &#123;</span><br><span class="line">                    image &apos;docker&apos;</span><br><span class="line">                    // 这里的挂载比较奇怪，因为在上一步maven构建完成之后并没有生成target(现在想来可能是docker的缘故)，</span><br><span class="line">                    // 所以把本地的maven仓库给挂载进来获取jar包使用了</span><br><span class="line">                    args &apos;-v /var/jenkins_home/.m2/repository/com/ghaoqi:/root/jar&apos;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            steps &#123;</span><br><span class="line">                sh &apos;&apos;&apos;</span><br><span class="line">                    rm -f docker/*.jar</span><br><span class="line">                    cp /root/jar/$&#123;SERVICE_NAME&#125;/$&#123;SERVICE_VERSION&#125;-$&#123;ENV&#125;/$&#123;SERVICE_NAME&#125;-$&#123;SERVICE_VERSION&#125;-$&#123;ENV&#125;.jar ./docker/$&#123;SERVICE_NAME&#125;.jar</span><br><span class="line">                    cd docker</span><br><span class="line">                    docker build -t $&#123;SERVICE_NAME&#125;:$&#123;SERVICE_VERSION&#125; .</span><br><span class="line">                &apos;&apos;&apos;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        stage(&apos;推送构建的镜像&apos;) &#123;</span><br><span class="line">            steps &#123;</span><br><span class="line">                // 这里使用了阿里云的容器镜像服务</span><br><span class="line">                sh &apos;&apos;&apos;</span><br><span class="line">                    docker login -u $&#123;DOCKER_USERNAME&#125; -p $&#123;DOCKER_PASSWORD&#125; $&#123;DOCKER_REPO&#125;</span><br><span class="line">                    docker tag $&#123;SERVICE_NAME&#125;:$&#123;SERVICE_VERSION&#125; $&#123;DOCKER_REPO&#125;/$&#123;DOCKER_NAMESPACE&#125;/$&#123;SERVICE_NAME&#125;:$&#123;SERVICE_VERSION&#125;</span><br><span class="line">                    docker push $&#123;DOCKER_REPO&#125;/$&#123;DOCKER_NAMESPACE&#125;/$&#123;SERVICE_NAME&#125;:$&#123;SERVICE_VERSION&#125;</span><br><span class="line">                    docker image rm $&#123;SERVICE_NAME&#125;:$&#123;SERVICE_VERSION&#125;</span><br><span class="line">                    docker image rm $&#123;DOCKER_REPO&#125;/$&#123;DOCKER_NAMESPACE&#125;/$&#123;SERVICE_NAME&#125;:$&#123;SERVICE_VERSION&#125;</span><br><span class="line">                &apos;&apos;&apos;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        stage(&apos;部署到远程机器&apos;) &#123;</span><br><span class="line">             steps &#123;</span><br><span class="line">                 // 使用sed的核心思路还是保证脚本能够复用而只需要修改参数</span><br><span class="line">                sh &quot;&quot;&quot;</span><br><span class="line">                    sed -e &apos;s/__nacos_ip__/$&#123;NACOS_IP&#125;/&apos; \</span><br><span class="line">                    -e &apos;s/__serviceName__/$&#123;SERVICE_NAME&#125;/&apos; \</span><br><span class="line">                    -e &apos;s/__ip__/$&#123;SERVER_IP&#125;/&apos; \</span><br><span class="line">                    -e &apos;s/__port__/$&#123;SERVER_PORT&#125;/&apos; \</span><br><span class="line">                    -e &apos;s/__docker_repo__/$&#123;DOCKER_REPO&#125;/&apos; \</span><br><span class="line">                    -e &apos;s/__docker_namespace__/$&#123;DOCKER_NAMESPACE&#125;/&apos; \</span><br><span class="line">                    -e &apos;s/__docker_username__/$&#123;DOCKER_USERNAME&#125;/&apos; \</span><br><span class="line">                    -e &apos;s/__docker_password__/$&#123;DOCKER_PASSWORD&#125;/&apos; \</span><br><span class="line">                    -e &apos;s/__version__/$&#123;SERVICE_VERSION&#125;/&apos; \</span><br><span class="line">                    -e &apos;s/__user__/$&#123;SERVER_USER&#125;/&apos; \</span><br><span class="line">                    -e &apos;s#__JAVA_OPTS__#$&#123;JAVA_OPTS&#125;#&apos; \</span><br><span class="line">                    -e &apos;s/__namespaceId__/$&#123;NAMESPACE_ID&#125;/&apos; deploy.sh &gt; replace.sh;</span><br><span class="line">                &quot;&quot;&quot;</span><br><span class="line"></span><br><span class="line">                // Jenkins自带的ssh插件</span><br><span class="line">                sshScript remote: host(), script: &quot;replace.sh&quot;</span><br><span class="line">             &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>生产环境：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br></pre></td><td class="code"><pre><span class="line">pipeline &#123;</span><br><span class="line"></span><br><span class="line">    agent any</span><br><span class="line"></span><br><span class="line">    environment &#123;</span><br><span class="line">        // 环境</span><br><span class="line">        ENV = &apos;PRO&apos;</span><br><span class="line">        // 服务名 ip 端口 版本</span><br><span class="line">        SERVICE_NAME = &apos;xx&apos;</span><br><span class="line">        SERVER_IP = &apos;xx&apos;</span><br><span class="line">        SERVER_PORT = &apos;xx&apos;</span><br><span class="line">        SERVER_USER = &apos;xx&apos;</span><br><span class="line">        SERVICE_VERSION = &apos;xx&apos;</span><br><span class="line">        // docker repo 内网ip</span><br><span class="line">        DOCKER_INTERNAL_REPO = &apos;xx&apos;</span><br><span class="line">        // docker repo 外网ip（上传镜像用）</span><br><span class="line">        DOCKER_PUBLIC_REPO = &apos;xx&apos;</span><br><span class="line">        // docker repo 命令空间 帐号密码</span><br><span class="line">        DOCKER_NAMESPACE = &apos;xx&apos;</span><br><span class="line">        DOCKER_USERNAME = &apos;xx&apos;</span><br><span class="line">        DOCKER_PASSWORD = &apos;xx&apos;</span><br><span class="line">        // 注册中心地址 命名空间</span><br><span class="line">        NACOS_IP = &apos;xx&apos;</span><br><span class="line">        NAMESPACE_ID = &apos;xx&apos;</span><br><span class="line">        // ssh 密钥文件</span><br><span class="line">        SECRET_FILE = credentials(&apos;xx&apos;)</span><br><span class="line">        // jvm参数</span><br><span class="line">        JAVA_OPTS = &apos;xx&apos;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    stages &#123;</span><br><span class="line"></span><br><span class="line">        stage(&apos;构建MAVEN项目&apos;) &#123;</span><br><span class="line">            agent &#123;</span><br><span class="line">                docker &#123;</span><br><span class="line">                    image &apos;maven:3-alpine&apos;</span><br><span class="line">                    args &apos;-v /var/jenkins_home/.m2:/root/.m2&apos;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            steps &#123;</span><br><span class="line">                sh &apos;mvn clean install -Dmaven.test.skip=true -Dproject.type=jar -Ppro package&apos;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        stage(&apos;构建docker镜像&apos;) &#123;</span><br><span class="line">            agent &#123;</span><br><span class="line">                docker &#123;</span><br><span class="line">                    image &apos;docker&apos;</span><br><span class="line">                    args &apos;-v /var/jenkins_home/.m2/repository/com/ghaoqi:/root/jar&apos;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            steps &#123;</span><br><span class="line">                sh &apos;&apos;&apos;</span><br><span class="line">                    rm -f docker/*.jar</span><br><span class="line">                    cp /root/jar/$&#123;SERVICE_NAME&#125;/$&#123;SERVICE_VERSION&#125;-$&#123;ENV&#125;/$&#123;SERVICE_NAME&#125;-$&#123;SERVICE_VERSION&#125;-$&#123;ENV&#125;.jar ./docker/$&#123;SERVICE_NAME&#125;.jar</span><br><span class="line">                    cd docker</span><br><span class="line">                    docker build -t $&#123;SERVICE_NAME&#125;:$&#123;SERVICE_VERSION&#125; .</span><br><span class="line">                &apos;&apos;&apos;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        stage(&apos;推送构建的镜像&apos;) &#123;</span><br><span class="line">            steps &#123;</span><br><span class="line">                sh &apos;&apos;&apos;</span><br><span class="line">                    docker login -u $&#123;DOCKER_USERNAME&#125; -p $&#123;DOCKER_PASSWORD&#125; $&#123;DOCKER_PUBLIC_REPO&#125;</span><br><span class="line">                    docker tag $&#123;SERVICE_NAME&#125;:$&#123;SERVICE_VERSION&#125; $&#123;DOCKER_PUBLIC_REPO&#125;/$&#123;DOCKER_NAMESPACE&#125;/$&#123;SERVICE_NAME&#125;:$&#123;SERVICE_VERSION&#125;</span><br><span class="line">                    docker push $&#123;DOCKER_PUBLIC_REPO&#125;/$&#123;DOCKER_NAMESPACE&#125;/$&#123;SERVICE_NAME&#125;:$&#123;SERVICE_VERSION&#125;</span><br><span class="line">                    docker image rm $&#123;SERVICE_NAME&#125;:$&#123;SERVICE_VERSION&#125;</span><br><span class="line">                    docker image rm $&#123;DOCKER_PUBLIC_REPO&#125;/$&#123;DOCKER_NAMESPACE&#125;/$&#123;SERVICE_NAME&#125;:$&#123;SERVICE_VERSION&#125;</span><br><span class="line">                &apos;&apos;&apos;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        stage(&apos;部署到远程机器&apos;) &#123;</span><br><span class="line">             steps &#123;</span><br><span class="line">                sh &quot;&quot;&quot;</span><br><span class="line">                    sed -e &apos;s/__nacos_ip__/$&#123;NACOS_IP&#125;/&apos; \</span><br><span class="line">                        -e &apos;s/__serviceName__/$&#123;SERVICE_NAME&#125;/&apos; \</span><br><span class="line">                        -e &apos;s/__ip__/$&#123;SERVER_IP&#125;/&apos; \</span><br><span class="line">                        -e &apos;s/__port__/$&#123;SERVER_PORT&#125;/&apos; \</span><br><span class="line">                        -e &apos;s/__docker_repo__/$&#123;DOCKER_INTERNAL_REPO&#125;/&apos; \</span><br><span class="line">                        -e &apos;s/__docker_namespace__/$&#123;DOCKER_NAMESPACE&#125;/&apos; \</span><br><span class="line">                        -e &apos;s/__docker_username__/$&#123;DOCKER_USERNAME&#125;/&apos; \</span><br><span class="line">                        -e &apos;s/__docker_password__/$&#123;DOCKER_PASSWORD&#125;/&apos; \</span><br><span class="line">                        -e &apos;s/__version__/$&#123;SERVICE_VERSION&#125;/&apos; \</span><br><span class="line">                        -e &apos;s/__user__/$&#123;SERVER_USER&#125;/&apos; \</span><br><span class="line">                        -e &apos;s#__JAVA_OPTS__#$&#123;JAVA_OPTS&#125;#&apos; \</span><br><span class="line">                        -e &apos;s/__namespaceId__/$&#123;NAMESPACE_ID&#125;/&apos; deploy.sh &gt; replace.sh;</span><br><span class="line">                &quot;&quot;&quot;</span><br><span class="line">                // 和测试唯一的区别就是在这里，主要是需要跳板服务器去部署线上的服务器(没有外网IP)</span><br><span class="line">                // $SECRET_FILE是在Jenkins中保存的凭证，原本是可以直接保持ssh凭证然后使用对应的函数来获取的</span><br><span class="line">                // 但是无奈不知为何不能获取，就直接使用了这种简单暴力的文件的形式来读取了</span><br><span class="line">                // -oStrictHostKeyChecking=no 这个参数比较重要因为脚本执行的时候可不会自动输入yes</span><br><span class="line">                // ssh xxx@xxx -C &quot;/bin/bash&quot; &lt; xx.sh 可以用来在远程服务器上执行脚本</span><br><span class="line">                // 在写sh脚本的时候选择使用 “” 还是 &apos;&apos; 来包含参数是很重要的，&apos;&apos; 的形式是完全不转义的也就是说不能使用sh的变量</span><br><span class="line">                // 注意: 需要在服务器上配置ssh免密</span><br><span class="line">                sh &quot;&quot;&quot;</span><br><span class="line">                    cat $SECRET_FILE &gt; pc-libs</span><br><span class="line">                    chmod 400 pc-libs</span><br><span class="line">                    scp -i pc-libs -oStrictHostKeyChecking=no replace.sh libs@47.110.85.172:/home/libs/$&#123;SERVICE_NAME&#125;.sh</span><br><span class="line">                    ssh -oStrictHostKeyChecking=no -i pc-libs libs@47.110.85.172 \</span><br><span class="line">                        &apos;ssh -oStrictHostKeyChecking=no webs@$&#123;SERVER_IP&#125; -C &quot;/bin/bash&quot; &lt; /home/libs/$&#123;SERVICE_NAME&#125;.sh&apos;;</span><br><span class="line">                &quot;&quot;&quot;</span><br><span class="line">             &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="docker"><a href="#docker" class="headerlink" title="docker"></a>docker</h1><p>下面命令在需要部署的服务器上执行:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ curl -fsSL get.docker.com -o get-docker.sh</span><br><span class="line">$ sudo sh get-docker.sh --mirror Aliyun</span><br><span class="line"># 将当前用户加入 docker 组</span><br><span class="line">$ sudo usermod -aG docker $USER</span><br></pre></td></tr></table></figure></p>
+<h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><ul>
+<li>docker ps : 查看运行中的容器</li>
+<li>docker ps -a: 查看全部容器</li>
+<li>docker start [容器id]: 启动容器</li>
+<li>docker stop [容器id]: 停止容器</li>
+<li>docker rm [容器id]: 删除容器</li>
+<li>docker iamge ls: 查看本地iamge</li>
+<li>docker rmi [镜像id]: 删除本地image</li>
+</ul>
+<p>注意： 所有 [容器id] 的地方都可以用空格分割来对多个容器进行操作</p>
+<h2 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">FROM java:8</span><br><span class="line"></span><br><span class="line">ENV TimeZone=Asia/Shanghai</span><br><span class="line"></span><br><span class="line">USER root</span><br><span class="line"># 这里添加组和用户主要是线上服务是不用root启动的</span><br><span class="line"># 如果不修改用户的话应用生成的日志都是root权限的无法操作</span><br><span class="line"># 注意：简单来说，容器内外的所有用户是一样的，容器内的root可以看作就是服务器上的root</span><br><span class="line">RUN mkdir /data \</span><br><span class="line">    &amp;&amp; groupadd -r webs \</span><br><span class="line">    &amp;&amp; useradd -d /data/webs -r -g webs webs \</span><br><span class="line">    &amp;&amp; mkdir -p /data/webs/common-data/logs \</span><br><span class="line">    &amp;&amp; mkdir -p /data/webs/common-data/logs/jvm-log \</span><br><span class="line">    &amp;&amp; chown -R webs:webs /data/webs \</span><br><span class="line">    # 应用的时区修改，否则日志时间相差8小时</span><br><span class="line">    &amp;&amp; ln -snf /usr/share/zoneinfo/$TimeZone /etc/localtime \</span><br><span class="line">    &amp;&amp; echo $TimeZone &gt; /etc/timezone</span><br><span class="line"></span><br><span class="line">USER webs</span><br><span class="line">ADD common-data.jar common-data.jar</span><br><span class="line"># 启动应用的命令， JAVA_OPTS 在启动脚本中配置，在上面的pipeline变量中应该已经看到</span><br><span class="line"># 目的是为了将全部变量都放置在一起配置保证复用</span><br><span class="line">ENTRYPOINT java $&#123;JAVA_OPTS&#125; -jar common-data.jar</span><br></pre></td></tr></table></figure>
+<h1 id="部署脚本"><a href="#部署脚本" class="headerlink" title="部署脚本"></a>部署脚本</h1><p>deploy.sh<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 准备变量</span></span><br><span class="line">nacos_ip=<span class="string">'__nacos_ip__'</span></span><br><span class="line">serviceName=<span class="string">'__serviceName__'</span></span><br><span class="line">ip=<span class="string">'__ip__'</span></span><br><span class="line">port=<span class="string">'__port__'</span></span><br><span class="line">namespaceId=<span class="string">'__namespaceId__'</span></span><br><span class="line">docker_repo=<span class="string">'__docker_repo__'</span></span><br><span class="line">docker_namespace=<span class="string">'__docker_namespace__'</span></span><br><span class="line">docker_username=<span class="string">'__docker_username__'</span></span><br><span class="line">docker_password=<span class="string">'__docker_password__'</span></span><br><span class="line">version=<span class="string">'__version__'</span></span><br><span class="line">JAVA_OPTS=<span class="string">'__JAVA_OPTS__'</span></span><br><span class="line">user=<span class="string">'__user__'</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 停止spring应用</span></span><br><span class="line">url=<span class="string">'http://'</span><span class="variable">$nacos_ip</span><span class="string">'/nacos/v1/ns/instance'</span></span><br><span class="line">data=<span class="string">'serviceName='</span><span class="variable">$serviceName</span><span class="string">'&amp;ip='</span><span class="variable">$ip</span><span class="string">'&amp;port='</span><span class="variable">$port</span><span class="string">'&amp;namespaceId='</span><span class="variable">$namespaceId</span><span class="string">'&amp;enabled=false'</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"下线正在运行的服务"</span></span><br><span class="line">curl <span class="variable">$url</span> -X PUT  --data <span class="variable">$data</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 等待10s确保没有流量</span></span><br><span class="line">sleep 10</span><br><span class="line"></span><br><span class="line"><span class="comment"># 停止并删除docker运行的服务容器</span></span><br><span class="line">containerId=$(docker ps -a | grep <span class="variable">$serviceName</span> | awk <span class="string">'&#123;print $1&#125;'</span>)</span><br><span class="line"><span class="keyword">if</span> [[ <span class="variable">$containerId</span> ]]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">"删除正在运行的容器服务"</span></span><br><span class="line">  docker stop -t 60 <span class="string">"<span class="variable">$containerId</span>"</span></span><br><span class="line">  docker rm <span class="string">"<span class="variable">$containerId</span>"</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"删除本地服务镜像"</span></span><br><span class="line">localimage=$(docker image ls | grep <span class="variable">$serviceName</span> | awk <span class="string">'&#123;print $1":"$2&#125;'</span>)</span><br><span class="line"><span class="keyword">if</span> [[ <span class="variable">$localimage</span> ]]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">  docker image rm <span class="string">"<span class="variable">$localimage</span>"</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"从镜像仓库拉取最新镜像"</span></span><br><span class="line">docker login -u <span class="variable">$docker_username</span> -p <span class="variable">$docker_password</span> <span class="variable">$docker_repo</span></span><br><span class="line">image_name=<span class="variable">$docker_repo</span>/<span class="variable">$docker_namespace</span>/<span class="variable">$serviceName</span>:<span class="variable">$version</span></span><br><span class="line">docker pull <span class="variable">$image_name</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"运行docker服务"</span></span><br><span class="line">mkdir -p /data/webs/<span class="variable">$serviceName</span>/logs</span><br><span class="line">mkdir -p /data/webs/<span class="variable">$serviceName</span>/logs/jvm-log/</span><br><span class="line"><span class="comment"># 获取webs用户uid和gid</span></span><br><span class="line">uid=$(id <span class="variable">$user</span> | awk <span class="string">'&#123;print $1&#125;'</span> | grep -o <span class="string">"[[:digit:]]\&#123;4\&#125;"</span>)</span><br><span class="line">gid=$(id <span class="variable">$user</span> | awk <span class="string">'&#123;print $2&#125;'</span> | grep -o <span class="string">"[[:digit:]]\&#123;4\&#125;"</span>)</span><br><span class="line">docker_id=$(docker run -v /data/webs/<span class="variable">$serviceName</span>/logs:/data/webs/<span class="variable">$serviceName</span>/logs \</span><br><span class="line">                        -e JAVA_OPTS=<span class="string">"<span class="variable">$JAVA_OPTS</span>"</span> \</span><br><span class="line">                        -p <span class="variable">$port</span>:<span class="variable">$port</span> -u <span class="string">"<span class="variable">$uid</span>:<span class="variable">$gid</span>"</span> -d \</span><br><span class="line">                        --name <span class="variable">$serviceName</span> --net host <span class="variable">$image_name</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 等待docker中java服务正式启动</span></span><br><span class="line">sleep 60</span><br><span class="line"><span class="comment"># 查看服务是否启动</span></span><br><span class="line">url=<span class="string">'http://'</span><span class="variable">$nacos_ip</span><span class="string">'/nacos/v1/ns/catalog/instances?'</span></span><br><span class="line">data=<span class="string">'serviceName='</span><span class="variable">$serviceName</span><span class="string">'&amp;clusterName=DEFAULT&amp;groupName=DEFAULT_GROUP&amp;pageSize=10&amp;pageNo=1&amp;namespaceId='</span><span class="variable">$namespaceId</span></span><br><span class="line">server_list=$(curl <span class="string">"<span class="variable">$url</span><span class="variable">$data</span>"</span> | python2 -c <span class="string">"import sys, json; res = [(str(d['ip'])+':'+str(d['port'])) for d in json.load(sys.stdin)['list']]; print res"</span> | grep <span class="variable">$ip</span> | grep <span class="variable">$port</span>)</span><br><span class="line"><span class="keyword">if</span> [[ <span class="variable">$server_list</span> ]]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"--------服务启动成功-------"</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"没有在注册中心获取到上线的服务，查看docker进程：<span class="variable">$docker_id</span>"</span></span><br><span class="line">    res=$(docker ps | grep <span class="variable">$serviceName</span>)</span><br><span class="line">    <span class="keyword">if</span> [[ <span class="variable">$res</span> ]]</span><br><span class="line">    <span class="keyword">then</span></span><br><span class="line">      <span class="built_in">echo</span> <span class="string">"docker进程包含服务容器，请重新检查服务是否上线"</span></span><br><span class="line">      <span class="built_in">echo</span> <span class="string">"<span class="variable">$res</span>"</span></span><br><span class="line">      <span class="built_in">exit</span> 1;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">      <span class="built_in">echo</span> <span class="string">"--------服务启动失败！-------"</span></span><br><span class="line">      <span class="built_in">exit</span> 1;</span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure></p>
+<p><strong>停止spring应用</strong>和<strong>查看服务是否启动</strong>并不是必需的，但是也算是为了服务能够<strong>优雅下线</strong>做的尝试吧，也可以看到大部分的参数也是这两个步骤带进来的，如果只对docker容器进行操作的话整个脚本会简单很多</p>
+<p>这也可以说是第一次写这么多行的脚本，但是实质还是不是很难的，主要用到的是<code>awk</code>,<code>grep</code>,<code>if</code>和管道<code>|</code>，还有一个一行处理json的python(还挺不错)</p>
+<h1 id="总体使用流程"><a href="#总体使用流程" class="headerlink" title="总体使用流程"></a>总体使用流程</h1><ol>
+<li>在项目中编写Jenkinsfile和deploy.sh</li>
+<li>在Jenkins中新建流水线项目,填写项目的地址并选择Jenkinsfile</li>
+<li>需要部署项目的服务器安装docker并配置ssh免密登陆</li>
+<li>Jenkins中点击构建</li>
+</ol>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>这次项目向docker化的持续集成的迁移改造，前前后后也大致是花费了一个多星期了，但是整个流程下来也算是能够对Jenkins和docker更加的熟悉一点了吧</p>
+<h2 id="不足"><a href="#不足" class="headerlink" title="不足"></a>不足</h2><p>当然由于每个组的技术不可能完全一致，CI的方式也肯定不尽相同，上面的方案也是草草交了的答卷，肯定是有很多优化的地方的。</p>
+<p>比如像构建并不是在监测到分支改动之后自动执行而是需要手动执行，代码并没有进行从单测到集成测试的任何测试，也没有经过代码质量审查，当然还有一些构建完成之后的工作也没有进行(比如没有通知构建)，等等….</p>
+<p>并且对上面的解决方案自我感觉也并不是特别良好，或者说感觉不够优雅，也是局限于业务规模，并不需要深入使用compose或者容器编排之类的技术，毕竟ci也是代码，是代码就决定它肯定不是一成不变的，也只能说多多自勉吧</p>
+<blockquote>
+<p>吾尝终日而思矣 不如须臾之所学也</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/标签/Jenkins/" rel="tag"># Jenkins</a>
+            
+              <a href="/标签/docker/" rel="tag"># docker</a>
+            
+              <a href="/标签/CI/" rel="tag"># CI</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/10/10/java8-lambda-note/" rel="next" title="Java8函数式编程笔记">
+                  <i class="fa fa-chevron-left"></i> Java8函数式编程笔记
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/10/27/weekly-report-2/" rel="prev" title="我的周报(2)">
+                  我的周报(2) <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#写在前面"><span class="nav-number">1.</span> <span class="nav-text">写在前面</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#部署流程"><span class="nav-number">2.</span> <span class="nav-text">部署流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Jenkins"><span class="nav-number">3.</span> <span class="nav-text">Jenkins</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装"><span class="nav-number">3.1.</span> <span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#not-work？"><span class="nav-number">3.1.1.</span> <span class="nav-text">not work？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pipeline（流水线）"><span class="nav-number">3.2.</span> <span class="nav-text">pipeline（流水线）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker"><span class="nav-number">4.</span> <span class="nav-text">docker</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#常用命令"><span class="nav-number">4.1.</span> <span class="nav-text">常用命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dockerfile"><span class="nav-number">4.2.</span> <span class="nav-text">Dockerfile</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#部署脚本"><span class="nav-number">5.</span> <span class="nav-text">部署脚本</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总体使用流程"><span class="nav-number">6.</span> <span class="nav-text">总体使用流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#不足"><span class="nav-number">7.1.</span> <span class="nav-text">不足</span></a></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" src="/images/misaka.jpg" alt="MisakaTang">
+  <p class="site-author-name" itemprop="name">MisakaTang</p>
+  <div class="site-description" itemprop="description">The limits of my language are the limits of my world</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/归档">
+        
+          <span class="site-state-item-count">77</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">65</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/TangMisaka23001" title="GitHub &rarr; https://github.com/TangMisaka23001" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:mikasatang@gmail.com" title="E-Mail &rarr; mailto:mikasatang@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://www.douban.com/people/misakatang/" title="豆瓣主页 &rarr; https://www.douban.com/people/misakatang/" rel="noopener" target="_blank"><i class="fa fa-fw fa-globe"></i>豆瓣主页</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://xiaoshidefeng.github.io/" title="https://xiaoshidefeng.github.io/" rel="noopener" target="_blank">ChenWei的博客</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://blog.bbchen.top/" title="http://blog.bbchen.top/" rel="noopener" target="_blank">BB chen的漂流记</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://blog.zhuzhenyuan.cn/" title="http://blog.zhuzhenyuan.cn/" rel="noopener" target="_blank">Aurthur_的博客</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://pyking.cn/" title="http://pyking.cn/" rel="noopener" target="_blank">1ni的博客</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MisakaTang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+  
+  <script>
+  function leancloudSelector(url) {
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = visitors.getAttribute('id').trim();
+      var title = visitors.getAttribute('data-flag-title').trim();
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+            
+              .catch(error => {
+                console.log('Failed to save visitor count', error);
+              })
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.log('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return element.getAttribute('id').trim();
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.url;
+            var time = item.time;
+            leancloudSelector(url).innerText = time;
+          }
+          for (var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.log('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=M1hXHB2YJ8SC7uPYi7vsCKwU-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id': 'M1hXHB2YJ8SC7uPYi7vsCKwU-gzGzoHsz',
+            'X-LC-Key': '5Ks1w8pWHHdOYOrOYiU4SX1l',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        const localhost = /http:\/\/(localhost|127.0.0.1|0.0.0.0)/;
+        if (localhost.test(document.URL)) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+    
+  
+  <script color="0,0,255" opacity="0.5" zindex="-1" count="99" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

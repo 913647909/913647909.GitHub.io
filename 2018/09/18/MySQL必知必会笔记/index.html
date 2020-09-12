@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+  <link rel="alternate" href="/atom.xml" title="MisakaTang's Blog" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2">
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="主键 总是应该定义主键 主键要求: 不更新主键的值 不重用主键的值 不在主键中使用可能会更改的值    连接 连接数据库: mysql -u{username} -p{password} 选择表: USE tables; 查看表/数据库: SHOW tables/databases; 查看列: SHOW COLUMNS FROM tables;">
+<meta name="keywords" content="MySQL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL必知必会笔记">
+<meta property="og:url" content="http://misakatang.cn/2018/09/18/MySQL必知必会笔记/index.html">
+<meta property="og:site_name" content="MisakaTang&#39;s Blog">
+<meta property="og:description" content="主键 总是应该定义主键 主键要求: 不更新主键的值 不重用主键的值 不在主键中使用可能会更改的值    连接 连接数据库: mysql -u{username} -p{password} 选择表: USE tables; 查看表/数据库: SHOW tables/databases; 查看列: SHOW COLUMNS FROM tables;">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://i.loli.net/2018/09/13/5b99c5336019b.png">
+<meta property="og:image" content="https://i.loli.net/2018/09/14/5b9b199943397.png">
+<meta property="og:image" content="https://i.loli.net/2018/09/14/5b9b19c08323b.png">
+<meta property="og:image" content="https://i.loli.net/2018/09/14/5b9b22b3c6f95.png">
+<meta property="og:image" content="https://i.loli.net/2018/09/14/5b9b22d98dcc9.png">
+<meta property="og:image" content="https://i.loli.net/2018/09/14/5b9b232127827.png">
+<meta property="og:image" content="https://i.loli.net/2018/09/14/5b9b2412bd014.png">
+<meta property="og:image" content="https://i.loli.net/2018/09/14/5b9b244e99eb3.png">
+<meta property="og:image" content="https://i.loli.net/2018/09/14/5b9b2b8d79cac.png">
+<meta property="og:updated_time" content="2020-09-12T05:04:59.741Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MySQL必知必会笔记">
+<meta name="twitter:description" content="主键 总是应该定义主键 主键要求: 不更新主键的值 不重用主键的值 不在主键中使用可能会更改的值    连接 连接数据库: mysql -u{username} -p{password} 选择表: USE tables; 查看表/数据库: SHOW tables/databases; 查看列: SHOW COLUMNS FROM tables;">
+<meta name="twitter:image" content="https://i.loli.net/2018/09/13/5b99c5336019b.png">
+  <link rel="canonical" href="http://misakatang.cn/2018/09/18/MySQL必知必会笔记/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>MySQL必知必会笔记 | MisakaTang's Blog</title>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-147618435-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-147618435-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">MisakaTang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-wiki">
+      
+    
+
+    <a href="/wiki/" rel="section"><i class="menu-item-icon fa fa-fw fa-book"></i> <br>WiKi</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/TangMisaka23001" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://misakatang.cn/2018/09/18/MySQL必知必会笔记/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="MisakaTang">
+      <meta itemprop="description" content="The limits of my language are the limits of my world">
+      <meta itemprop="image" content="/images/misaka.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MisakaTang's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">MySQL必知必会笔记
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2018-09-18 21:25:09" itemprop="dateCreated datePublished" datetime="2018-09-18T21:25:09+00:00">2018-09-18</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-12 05:04:59" itemprop="dateModified" datetime="2020-09-12T05:04:59+00:00">2020-09-12</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/分类/笔记/" itemprop="url" rel="index"><span itemprop="name">笔记</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span id="/2018/09/18/MySQL必知必会笔记/" class="post-meta-item leancloud_visitors" data-flag-title="MySQL必知必会笔记" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="主键"><a href="#主键" class="headerlink" title="主键"></a><a href="#主键" title="主键"></a>主键</h1><ul>
+<li>总是应该定义主键</li>
+<li>主键要求:<ol>
+<li>不更新主键的值</li>
+<li>不重用主键的值</li>
+<li>不在主键中使用可能会更改的值</li>
+</ol>
+</li>
+</ul>
+<h1 id="连接"><a href="#连接" class="headerlink" title="连接"></a><a href="#连接" title="连接"></a>连接</h1><ul>
+<li>连接数据库: <code>mysql -u{username} -p{password}</code></li>
+<li>选择表: <code>USE tables;</code></li>
+<li>查看表/数据库: <code>SHOW tables/databases;</code></li>
+<li>查看列: <code>SHOW COLUMNS FROM tables;</code></li>
+</ul>
+<a id="more"></a>
+<h1 id="检索数据"><a href="#检索数据" class="headerlink" title="检索数据"></a><a href="#检索数据" title="检索数据"></a>检索数据</h1><ul>
+<li>单列: <code>SELECT col FROM tables;</code></li>
+<li>多列: <code>SELECT col1, col2 FROM tables;</code></li>
+<li>所有列: <code>SELECT * FROM tables;</code></li>
+<li>检索不同的行: <code>SELECT DISTINCT col FROM tables;</code></li>
+<li>限制结果: <code>SELECT col FROM tables LIMIT 1,1</code></li>
+</ul>
+<p>注意:</p>
+<ol>
+<li>检索出来的数据都是未排序的,并且原始数据没有格式</li>
+<li>一般不要使用*通配符,指出需要检索的列提高性能</li>
+<li>通配符用处:检索未知列</li>
+<li>不能部分使用DISTINCT</li>
+<li>LIMIT第一个参数为开始位置,第二个为检索的行数,开始位置从0开始</li>
+</ol>
+<h1 id="排序检索数据"><a href="#排序检索数据" class="headerlink" title="排序检索数据"></a><a href="#排序检索数据" title="排序检索数据"></a>排序检索数据</h1><ul>
+<li>单列排序: <code>SELECT col FROM table ORDER BY col</code></li>
+<li>多列排序: <code>SELECT col1,col2 FROM table ORDER BY col1,col2</code></li>
+<li>指定排序方向: <code>SELECT col FROM table ORDER BY col DESC</code></li>
+<li>多列指定方向: <code>SELECT col1, col2 FROM table ORDER BY col1 DESC, col2</code></li>
+</ul>
+<p>注意:</p>
+<ol>
+<li>如果不明确排序顺序,不应假定检索出来的数据有顺序</li>
+<li>多列时排序关键字有主次顺序之分</li>
+<li>MySQL默认为升序排序</li>
+<li>如果想要对多个列降序排序,需要对每个列指定DESC关键字</li>
+<li>位置: FROM ORDER BY LIMIT</li>
+</ol>
+<h1 id="过滤数据"><a href="#过滤数据" class="headerlink" title="过滤数据"></a><a href="#过滤数据" title="过滤数据"></a>过滤数据</h1><ul>
+<li>检查单个值: <code>SELECT col FROM table WHERE col = ?</code></li>
+<li>检查不匹配: <code>SELECT col FROM table WHERE col &lt;&gt; ?</code></li>
+<li>检查范围值: <code>SELECT col FROM table WHERE col &lt; ?</code></li>
+<li>空值检查: <code>SELECT col FROM table WHERE col IS NULL</code></li>
+<li>组合WHERE子句:<ol>
+<li>AND操作符: <code>SELECT col FROM table WHERE col1 = ? AND col2 = ?</code></li>
+<li>OR操作符: <code>SELECT col FROM table WHERE col1 = ? OR col2 = ?</code></li>
+<li>IN操作符: <code>SELECT col FROM table WHERE col IN (val1, val2)</code></li>
+<li>NOT操作符: <code>SELECT col FROM table WHERE col NOT IN (val1, val2)</code></li>
+</ol>
+</li>
+</ul>
+<p><a href="https://i.loli.net/2018/09/13/5b99c5336019b.png" target="_blank" rel="noopener"><img src="https://i.loli.net/2018/09/13/5b99c5336019b.png" alt=""></a></p>
+<p>注意:</p>
+<ol>
+<li>数据检索和过滤应在数据库中完成,以提高应用的性能和减少带宽消耗</li>
+<li>AND和OR计算次序:AND会被优先计算,优先级需要使用圆括号来提升</li>
+<li>IN的功能和OR相当,但是IN的执行更快且可以包含其他SELECT语句建立子句</li>
+</ol>
+<h1 id="用通配符过滤数据"><a href="#用通配符过滤数据" class="headerlink" title="用通配符过滤数据"></a><a href="#用通配符过滤数据" title="用通配符过滤数据"></a>用通配符过滤数据</h1><ul>
+<li>百分号(%)通配符: <code>SELECT col FROM table WHERE col LIKE &#39;xx%&#39;</code></li>
+<li>下划线(<em>)通配符: `SELECT col FROM table WHERE col LIKE ‘</em> xx’`</li>
+</ul>
+<p>注意:</p>
+<ol>
+<li>尾空格会干扰通配符匹配</li>
+<li>%不能匹配NULL的值</li>
+<li>下划线只匹配单个字符</li>
+<li>不要过度使用通配符</li>
+</ol>
+<h1 id="使用正则表达式过滤"><a href="#使用正则表达式过滤" class="headerlink" title="使用正则表达式过滤"></a><a href="#使用正则表达式过滤" title="使用正则表达式过滤"></a>使用正则表达式过滤</h1><ul>
+<li><code>SELECT col FROM table WHERE col REGEXP &#39;reg&#39;</code></li>
+<li>匹配字符类</li>
+<li>定位符</li>
+</ul>
+<p><a href="https://i.loli.net/2018/09/14/5b9b199943397.png" target="_blank" rel="noopener"><img src="https://i.loli.net/2018/09/14/5b9b199943397.png" alt=""></a><br><a href="https://i.loli.net/2018/09/14/5b9b19c08323b.png" target="_blank" rel="noopener"><img src="https://i.loli.net/2018/09/14/5b9b19c08323b.png" alt=""></a></p>
+<p>注意:</p>
+<ol>
+<li>MySQL只支持正则的一个很小的子集</li>
+<li>区分大小写需要在REGEXP后加BINARY关键字</li>
+</ol>
+<h1 id="计算字段"><a href="#计算字段" class="headerlink" title="计算字段"></a><a href="#计算字段" title="计算字段"></a>计算字段</h1><ul>
+<li>拼接字段: <code>SELECT Concat(col1, &#39;str&#39;, col2, &#39;str2&#39;) FROM table</code></li>
+<li>使用别名: <code>SELECT col AS name FROM table</code></li>
+<li>执行算术计算: <code>SELECT col*col2 AS name FROM table</code></li>
+</ul>
+<p>注意:</p>
+<ol>
+<li>计算字段用于格式化检索出的数据</li>
+<li>LTrim()和RTrim()函数可以去除字段左右两边空格</li>
+</ol>
+<h1 id="数据处理函数"><a href="#数据处理函数" class="headerlink" title="数据处理函数"></a><a href="#数据处理函数" title="数据处理函数"></a>数据处理函数</h1><h2 id="常用文本处理函数"><a href="#常用文本处理函数" class="headerlink" title="常用文本处理函数:"></a><a href="#常用文本处理函数" title="常用文本处理函数:"></a>常用文本处理函数:</h2><p><a href="https://i.loli.net/2018/09/14/5b9b22b3c6f95.png" target="_blank" rel="noopener"><img src="https://i.loli.net/2018/09/14/5b9b22b3c6f95.png" alt=""></a><br><a href="https://i.loli.net/2018/09/14/5b9b22d98dcc9.png" target="_blank" rel="noopener"><img src="https://i.loli.net/2018/09/14/5b9b22d98dcc9.png" alt=""></a></p>
+<h2 id="常用日期处理函数"><a href="#常用日期处理函数" class="headerlink" title="常用日期处理函数:"></a><a href="#常用日期处理函数" title="常用日期处理函数:"></a>常用日期处理函数:</h2><p><a href="https://i.loli.net/2018/09/14/5b9b232127827.png" target="_blank" rel="noopener"><img src="https://i.loli.net/2018/09/14/5b9b232127827.png" alt=""></a></p>
+<ul>
+<li>检索时间: <code>SELECT col FROM table WHERE Date(col2) = &#39;xxxx-xx-xx&#39;</code></li>
+<li>检索时间段: <code>SELECT col FROM table WHERE Date(col) BETWEEN &#39;xxxx-xx-xx&#39; AND &#39;xxxx-xx-xx&#39;</code></li>
+</ul>
+<p>注意:</p>
+<ol>
+<li>总是应该使用4位数的年份</li>
+</ol>
+<h2 id="数值处理函数"><a href="#数值处理函数" class="headerlink" title="数值处理函数:"></a><a href="#数值处理函数" title="数值处理函数:"></a>数值处理函数:</h2><p><a href="https://i.loli.net/2018/09/14/5b9b2412bd014.png" target="_blank" rel="noopener"><img src="https://i.loli.net/2018/09/14/5b9b2412bd014.png" alt=""></a></p>
+<h1 id="汇总数据"><a href="#汇总数据" class="headerlink" title="汇总数据"></a><a href="#汇总数据" title="汇总数据"></a>汇总数据</h1><h2 id="聚集函数"><a href="#聚集函数" class="headerlink" title="聚集函数"></a><a href="#聚集函数" title="聚集函数"></a>聚集函数</h2><p><a href="https://i.loli.net/2018/09/14/5b9b244e99eb3.png" target="_blank" rel="noopener"><img src="https://i.loli.net/2018/09/14/5b9b244e99eb3.png" alt=""></a></p>
+<p>注意:</p>
+<ol>
+<li>使用COUNT(*)计数包括NULL值,COUNT(col)则不包含NULL值</li>
+</ol>
+<h1 id="分组数据"><a href="#分组数据" class="headerlink" title="分组数据"></a><a href="#分组数据" title="分组数据"></a>分组数据</h1><ul>
+<li>创建分组: <code>SELECT col FROM table GROUP BY col</code></li>
+<li>HAVING过滤分组: <code>SELECT col, COUNT(*) FROM table GROUP BY col HAVING COUNT(*) &gt; 2</code></li>
+</ul>
+<p><a href="https://i.loli.net/2018/09/14/5b9b2b8d79cac.png" target="_blank" rel="noopener"><img src="https://i.loli.net/2018/09/14/5b9b2b8d79cac.png" alt=""></a></p>
+<p>注意:</p>
+<ol>
+<li>GROUP BY子句可以包含任意数目的列</li>
+<li>建立分组时,指定的所有列都一起计算</li>
+<li>GROUP BY子句中列出的每个列都必须是检索列或有效表达式</li>
+<li>除计算语句外, SELECT的每个列都需要在GROUP BY中给出</li>
+<li>如果分组中有NULL值,将NULL作为一个分组返回</li>
+<li>GROUP BY子句必须出现在WHERE之后,ORDER BY之前</li>
+<li>WHERE在分组之前过滤,HAVING在分组之后过滤</li>
+<li>GROUP BY之后应该</li>
+</ol>
+<h1 id="使用子查询"><a href="#使用子查询" class="headerlink" title="使用子查询"></a><a href="#使用子查询" title="使用子查询"></a>使用子查询</h1><ul>
+<li>利用子查询进行过滤: <code>SELECT col FROM table1 WHERE col IN (SELECT col2 FROM table2 WHERE col2=?)</code></li>
+<li>作为计算字段: <code>SELECT col,(SELECT COUNT(*) FROM table2 WHERE col3=col4) FROM table1</code></li>
+</ul>
+<p>注意:</p>
+<ol>
+<li>列必须匹配,子查询SELECT和WHERE应保持相同的列</li>
+<li>使用子查询时需要考虑效率和性能</li>
+</ol>
+<h1 id="联结表"><a href="#联结表" class="headerlink" title="联结表"></a><a href="#联结表" title="联结表"></a>联结表</h1><ul>
+<li>创建联结: <code>SELECT col1, col2 FROM table1, table2 WHERE table1.col=table2.col</code></li>
+<li>内部联结: <code>SELECT col1, col2 FROM table1 INNER JOIN table2 ON table1.col=table2.col</code></li>
+<li>外部联结: <code>SELECT col1, col2 FROM table1 LEFT OUTER JOIN table2 ON table1.col=table2.col</code></li>
+</ul>
+<p>注意:</p>
+<ol>
+<li>在引用的列名可能出现二义性时需要使用完全限定列名</li>
+<li>没有WHERE语句限定的结果将返回笛卡尔积</li>
+<li>WHERE为内部联结,是等值联结</li>
+<li>可以使用表别名缩短sql语句和重复使用一张表</li>
+</ol>
+<h1 id="组合查询"><a href="#组合查询" class="headerlink" title="组合查询"></a><a href="#组合查询" title="组合查询"></a>组合查询</h1><ul>
+<li>使用UNION: <code>SELECT col FROM table1 WHERE col2=? UNION SELECT col FROM table1 WHERE col3=?</code></li>
+</ul>
+<p>注意:</p>
+<ol>
+<li>UNION必须由两条或以上的SELECT组成</li>
+<li>UNION中的每个查询必须包含相同的列,表达式或聚集函数</li>
+<li>列数据必须兼容</li>
+<li>UNION默认会去重,取消去重使用UNION ALL查询</li>
+<li>UNION只能使用一条排序语句出现在最后一个SELECT之后</li>
+</ol>
+<h1 id="全文本搜索"><a href="#全文本搜索" class="headerlink" title="全文本搜索"></a><a href="#全文本搜索" title="全文本搜索"></a>全文本搜索</h1><ul>
+<li><code>SELECT col FROM table WHERE Match(col) Against(&#39;text&#39;)</code></li>
+<li>对结果排序: <code>SELECT col,Match(col) Against(&#39;text&#39;) AS rank FROM table</code></li>
+</ul>
+<h1 id="使用视图"><a href="#使用视图" class="headerlink" title="使用视图"></a><a href="#使用视图" title="使用视图"></a>使用视图</h1><ul>
+<li><code>CREATE VIEW view1 AS SELECT col FROM table</code></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/标签/MySQL/" rel="tag"># MySQL</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2018/09/16/跟着qsc搞机-器学习-Factorization-Machines-因式分解机/" rel="next" title="跟着qsc搞机(器学习)--Factorization Machines(因式分解机)">
+                  <i class="fa fa-chevron-left"></i> 跟着qsc搞机(器学习)--Factorization Machines(因式分解机)
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2018/10/02/读《禅与摩托车维修艺术》/" rel="prev" title="读《禅与摩托车维修艺术》">
+                  读《禅与摩托车维修艺术》 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#主键"><span class="nav-number">1.</span> <span class="nav-text">主键</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#连接"><span class="nav-number">2.</span> <span class="nav-text">连接</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#检索数据"><span class="nav-number">3.</span> <span class="nav-text">检索数据</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#排序检索数据"><span class="nav-number">4.</span> <span class="nav-text">排序检索数据</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#过滤数据"><span class="nav-number">5.</span> <span class="nav-text">过滤数据</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#用通配符过滤数据"><span class="nav-number">6.</span> <span class="nav-text">用通配符过滤数据</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用正则表达式过滤"><span class="nav-number">7.</span> <span class="nav-text">使用正则表达式过滤</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#计算字段"><span class="nav-number">8.</span> <span class="nav-text">计算字段</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据处理函数"><span class="nav-number">9.</span> <span class="nav-text">数据处理函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#常用文本处理函数"><span class="nav-number">9.1.</span> <span class="nav-text">常用文本处理函数:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用日期处理函数"><span class="nav-number">9.2.</span> <span class="nav-text">常用日期处理函数:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数值处理函数"><span class="nav-number">9.3.</span> <span class="nav-text">数值处理函数:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#汇总数据"><span class="nav-number">10.</span> <span class="nav-text">汇总数据</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#聚集函数"><span class="nav-number">10.1.</span> <span class="nav-text">聚集函数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分组数据"><span class="nav-number">11.</span> <span class="nav-text">分组数据</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用子查询"><span class="nav-number">12.</span> <span class="nav-text">使用子查询</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#联结表"><span class="nav-number">13.</span> <span class="nav-text">联结表</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#组合查询"><span class="nav-number">14.</span> <span class="nav-text">组合查询</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#全文本搜索"><span class="nav-number">15.</span> <span class="nav-text">全文本搜索</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用视图"><span class="nav-number">16.</span> <span class="nav-text">使用视图</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" src="/images/misaka.jpg" alt="MisakaTang">
+  <p class="site-author-name" itemprop="name">MisakaTang</p>
+  <div class="site-description" itemprop="description">The limits of my language are the limits of my world</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/归档">
+        
+          <span class="site-state-item-count">77</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">65</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/TangMisaka23001" title="GitHub &rarr; https://github.com/TangMisaka23001" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:mikasatang@gmail.com" title="E-Mail &rarr; mailto:mikasatang@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://www.douban.com/people/misakatang/" title="豆瓣主页 &rarr; https://www.douban.com/people/misakatang/" rel="noopener" target="_blank"><i class="fa fa-fw fa-globe"></i>豆瓣主页</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://xiaoshidefeng.github.io/" title="https://xiaoshidefeng.github.io/" rel="noopener" target="_blank">ChenWei的博客</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://blog.bbchen.top/" title="http://blog.bbchen.top/" rel="noopener" target="_blank">BB chen的漂流记</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://blog.zhuzhenyuan.cn/" title="http://blog.zhuzhenyuan.cn/" rel="noopener" target="_blank">Aurthur_的博客</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://pyking.cn/" title="http://pyking.cn/" rel="noopener" target="_blank">1ni的博客</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MisakaTang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+  
+  <script>
+  function leancloudSelector(url) {
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = visitors.getAttribute('id').trim();
+      var title = visitors.getAttribute('data-flag-title').trim();
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+            
+              .catch(error => {
+                console.log('Failed to save visitor count', error);
+              })
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.log('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return element.getAttribute('id').trim();
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.url;
+            var time = item.time;
+            leancloudSelector(url).innerText = time;
+          }
+          for (var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.log('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=M1hXHB2YJ8SC7uPYi7vsCKwU-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id': 'M1hXHB2YJ8SC7uPYi7vsCKwU-gzGzoHsz',
+            'X-LC-Key': '5Ks1w8pWHHdOYOrOYiU4SX1l',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        const localhost = /http:\/\/(localhost|127.0.0.1|0.0.0.0)/;
+        if (localhost.test(document.URL)) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+    
+  
+  <script color="0,0,255" opacity="0.5" zindex="-1" count="99" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

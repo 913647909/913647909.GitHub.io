@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+  <link rel="alternate" href="/atom.xml" title="MisakaTang's Blog" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2">
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="简述在配置完OpenCV以及尝试过官方的例子之后,就开始学习一些需要用到的对图片的操作了.因为对项目的功能实现有比较明确的需要使用的方法以及操作,所以就从这些需要的功能开始学习,在过程中再对其他的需要了解的知识进行补充吧.大致的学习范围是:  对Mat类的了解和操作(在之后会学习) 直方图以及直方图均衡化 图像的降噪处理(主要是高斯滤波器) Canny边缘检测函数 Sobel算子检测方向性的边缘">
+<meta name="keywords" content="Java,OpenCV">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OpenCV学习笔记-Java实现(三)">
+<meta property="og:url" content="http://misakatang.cn/2017/07/08/OpenCV学习笔记-Java实现-三/index.html">
+<meta property="og:site_name" content="MisakaTang&#39;s Blog">
+<meta property="og:description" content="简述在配置完OpenCV以及尝试过官方的例子之后,就开始学习一些需要用到的对图片的操作了.因为对项目的功能实现有比较明确的需要使用的方法以及操作,所以就从这些需要的功能开始学习,在过程中再对其他的需要了解的知识进行补充吧.大致的学习范围是:  对Mat类的了解和操作(在之后会学习) 直方图以及直方图均衡化 图像的降噪处理(主要是高斯滤波器) Canny边缘检测函数 Sobel算子检测方向性的边缘">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://misakatang.oss-cn-beijing.aliyuncs.com/201707086.jpg">
+<meta property="og:image" content="http://dl2.iteye.com/upload/attachment/0112/8663/0160307e-0e5e-37a6-b174-1539a4dbff19.png">
+<meta property="og:updated_time" content="2020-09-12T05:04:59.741Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="OpenCV学习笔记-Java实现(三)">
+<meta name="twitter:description" content="简述在配置完OpenCV以及尝试过官方的例子之后,就开始学习一些需要用到的对图片的操作了.因为对项目的功能实现有比较明确的需要使用的方法以及操作,所以就从这些需要的功能开始学习,在过程中再对其他的需要了解的知识进行补充吧.大致的学习范围是:  对Mat类的了解和操作(在之后会学习) 直方图以及直方图均衡化 图像的降噪处理(主要是高斯滤波器) Canny边缘检测函数 Sobel算子检测方向性的边缘">
+<meta name="twitter:image" content="http://misakatang.oss-cn-beijing.aliyuncs.com/201707086.jpg">
+  <link rel="canonical" href="http://misakatang.cn/2017/07/08/OpenCV学习笔记-Java实现-三/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>OpenCV学习笔记-Java实现(三) | MisakaTang's Blog</title>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-147618435-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-147618435-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">MisakaTang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-wiki">
+      
+    
+
+    <a href="/wiki/" rel="section"><i class="menu-item-icon fa fa-fw fa-book"></i> <br>WiKi</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/TangMisaka23001" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://misakatang.cn/2017/07/08/OpenCV学习笔记-Java实现-三/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="MisakaTang">
+      <meta itemprop="description" content="The limits of my language are the limits of my world">
+      <meta itemprop="image" content="/images/misaka.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MisakaTang's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">OpenCV学习笔记-Java实现(三)
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2017-07-08 20:59:27" itemprop="dateCreated datePublished" datetime="2017-07-08T20:59:27+00:00">2017-07-08</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-12 05:04:59" itemprop="dateModified" datetime="2020-09-12T05:04:59+00:00">2020-09-12</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/分类/笔记/" itemprop="url" rel="index"><span itemprop="name">笔记</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span id="/2017/07/08/OpenCV学习笔记-Java实现-三/" class="post-meta-item leancloud_visitors" data-flag-title="OpenCV学习笔记-Java实现(三)" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="简述"><a href="#简述" class="headerlink" title="简述"></a><a href="#简述" title="简述"></a>简述</h1><p>在配置完OpenCV以及尝试过官方的例子之后,就开始学习一些需要用到的对图片的操作了.<br>因为对项目的功能实现有比较明确的需要使用的方法以及操作,所以就从这些需要的功能开始学习,在过程中再对其他的需要了解的知识进行补充吧.大致的学习范围是:</p>
+<ol>
+<li>对Mat类的了解和操作(在之后会学习)</li>
+<li>直方图以及直方图均衡化</li>
+<li>图像的降噪处理(主要是高斯滤波器)</li>
+<li>Canny边缘检测函数</li>
+<li>Sobel算子检测方向性的边缘</li>
+<li>霍夫变换(霍夫概率变换)提取直线</li>
+<li>图像细化(Zhang快速并行算法)</li>
+</ol>
+<hr>
+<p>以上是需要学习的主要的功能,在理解上由于数学功力欠缺,只有对函数的很浅的理解和认识,在写博客的过程中也不会有太多的数学出现,主要还是以能够使用为主.<br><a id="more"></a></p>
+<h1 id="官方帮助文档"><a href="#官方帮助文档" class="headerlink" title="官方帮助文档"></a><a href="#官方帮助文档" title="官方帮助文档"></a>官方帮助文档</h1><p>OpenCV的官方也提供了一份Java的API的文档,但是由于版本问题,在网上能够找到的大部分资料都是OpenCV2.*版本的函数,在3.0之后函数名称和某些函数的参数也发生了变化 ,故官方的文档在实际使用的时候并不是很好用,但是用来查看函数的参数和操作上还是有很大的帮助.<br><a href="http://docs.opencv.org/java/3.0.0/" target="_blank" rel="noopener">OpenCV官方3.0.0文档</a></p>
+<h2 id="主要使用到的Package的简介"><a href="#主要使用到的Package的简介" class="headerlink" title="主要使用到的Package的简介"></a><a href="#主要使用到的Package的简介" title="主要使用到的Package的简介"></a>主要使用到的Package的简介</h2><p><a href="http://misakatang.oss-cn-beijing.aliyuncs.com/201707086.jpg" title="图片" target="_blank" rel="noopener"><img src="http://misakatang.oss-cn-beijing.aliyuncs.com/201707086.jpg" alt="图片"></a><br>这是文档中所包含的全部的包名,主要使用到了以下的几个包:</p>
+<ul>
+<li><strong>org.opencv.core</strong>:里面包含了Core,CvType,Mat三个使用到的类.</li>
+<li><strong>org.opencv.imgcodes</strong>:主要是对于图片的读写,均在此包中</li>
+<li><strong>org.opencv.imgproc</strong>:是使用到的频率最高的也是我最主要使用的包,下面将提到的大部分的操作的函数均在此包中</li>
+<li><strong>org.opencv.videoio</strong>:主要包含了对于视频的操作</li>
+</ul>
+<h1 id="开始-直方图均衡化"><a href="#开始-直方图均衡化" class="headerlink" title="开始-直方图均衡化"></a><a href="#开始-直方图均衡化" title="开始-直方图均衡化"></a>开始-直方图均衡化</h1><h2 id="直方图"><a href="#直方图" class="headerlink" title="直方图:"></a><a href="#直方图" title="直方图:"></a>直方图:</h2><ul>
+<li>直方图是图像中像素强度分布的图形学表达式</li>
+<li>它统计了每一个强度值所具有的像素个数</li>
+</ul>
+<h2 id="直方图均衡化"><a href="#直方图均衡化" class="headerlink" title="直方图均衡化:"></a><a href="#直方图均衡化" title="直方图均衡化:"></a>直方图均衡化:</h2><p>是通过拉伸像素强度分布范围来<strong>增强图像对比度</strong>的一种方法.</p>
+<h2 id="均衡化函数-equalizeHist"><a href="#均衡化函数-equalizeHist" class="headerlink" title="均衡化函数:equalizeHist()"></a><a href="#均衡化函数-equalizeHist" title="均衡化函数:equalizeHist()"></a>均衡化函数:equalizeHist()</h2><p><code>public static void equalizeHist(Mat src,Mat dst)</code><br>参数src为图像源,dst为转换之后的图像.<strong>注:</strong>函数只接受灰度图像,在图像处理之前要进行转换.<br>例程:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//加载图片源</span></span><br><span class="line">Mat src = Imgcodecs.imread(<span class="string">"img/fengjing.jpg"</span>);</span><br><span class="line"><span class="comment">//创建一个用来接受的Mat</span></span><br><span class="line">Mat mat = <span class="keyword">new</span> Mat(src.rows(),src.cols(),src.type());</span><br><span class="line"><span class="comment">//由于equalizeHist方法只能接受8UC1类型的图片,所以需要将图片转换成GRAY格式,</span></span><br><span class="line">Imgproc.cvtColor(mat,mat,Imgproc.COLOR_RGB2GRAY);</span><br><span class="line">Imgproc.cvtColor(src,src,Imgproc.COLOR_RGB2GRAY);</span><br><span class="line"><span class="comment">//应用直方图均衡化</span></span><br><span class="line">Imgproc.equalizeHist(src,mat);</span><br></pre></td></tr></table></figure>
+<h2 id="参考教程"><a href="#参考教程" class="headerlink" title="参考教程"></a><a href="#参考教程" title="参考教程"></a>参考教程</h2><p><a href="http://www.opencv.org.cn/opencvdoc/2.3.2/html/doc/tutorials/imgproc/histograms/histogram_equalization/histogram_equalization.html" target="_blank" rel="noopener">OpenCV 2.3.2 documentation » OpenCV 教程 » imgproc 模块. 图像处理 »直方图均衡化</a></p>
+<hr>
+<h1 id="图像的降噪处理-高斯滤波器"><a href="#图像的降噪处理-高斯滤波器" class="headerlink" title="图像的降噪处理-高斯滤波器"></a><a href="#图像的降噪处理-高斯滤波器" title="图像的降噪处理-高斯滤波器"></a>图像的降噪处理-高斯滤波器</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a><a href="#简介" title="简介"></a>简介</h2><p>高斯滤波是一种线性平滑滤波，适用于消除高斯噪声，广泛应用于图像处理的减噪过程。通俗的讲，高斯滤波就是对整幅图像进行加权平均的过程，每一个像素点的值，都由其本身和邻域内的其他像素值经过加权平均后得到。</p>
+<h2 id="高斯滤波器函数"><a href="#高斯滤波器函数" class="headerlink" title="高斯滤波器函数"></a><a href="#高斯滤波器函数" title="高斯滤波器函数"></a>高斯滤波器函数</h2><p><code>public static void GaussianBlur(Mat src,Mat dst,Size ksize,double sigmaX,double sigmaY,int borderType)</code><br>参数说明:</p>
+<ul>
+<li>Mat src:输入图像</li>
+<li>Mat dst:输出图像</li>
+<li>Size ksize:高斯内核的大小</li>
+<li>double sigmaX:高斯核函数在X方向上的标准偏差</li>
+<li>double sigmaY:高斯核函数在Y方向上的标准偏差,若不设置则与X方向上相同</li>
+<li>int borderType:推断图像外部像素的某种便捷模式,一般不需要更改,默认值即可.<br>测试例子:<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//加载图片源</span></span><br><span class="line">Mat src = Imgcodecs.imread(<span class="string">"img/test.jpg"</span>, Imgproc.COLOR_RGB2GRAY);</span><br><span class="line"><span class="comment">//创建一个用来接受的Mat</span></span><br><span class="line">Mat mat = <span class="keyword">new</span> Mat(src.rows(),src.cols(),src.type());</span><br><span class="line"><span class="comment">//由于equalizeHist方法只能接受8UC1类型的图片,所以需要将图片转换成GRAY格式,</span></span><br><span class="line">Imgproc.cvtColor(mat,mat,Imgproc.COLOR_RGB2GRAY);Imgproc.cvtColor(src,src,</span><br><span class="line">Imgproc.COLOR_RGB2GRAY);</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">* 首先进行高斯滤波处理</span></span><br><span class="line"><span class="comment">* */</span></span><br><span class="line">Imgproc.GaussianBlur(src,mat,<span class="keyword">new</span> Size(<span class="number">11</span>,<span class="number">11</span>),<span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>参考教程:<br><a href="http://blog.csdn.net/keith_bb/article/details/54412493" target="_blank" rel="noopener">opencv学习(二十)之高斯滤波GaussianBlur()</a><br><a href="http://blog.csdn.net/l_inyi/article/details/8915116" target="_blank" rel="noopener">图像处理—高斯滤波</a></p>
+<hr>
+<h1 id="Mat类的操作"><a href="#Mat类的操作" class="headerlink" title="Mat类的操作"></a><a href="#Mat类的操作" title="Mat类的操作"></a>Mat类的操作</h1><h2 id="Mat类的理解"><a href="#Mat类的理解" class="headerlink" title="Mat类的理解"></a><a href="#Mat类的理解" title="Mat类的理解"></a>Mat类的理解</h2><p>对于Mat的理解,主要是对于该类内部是如何存储图片信息的理解.详细可以参照博客:<a href="http://www.jianshu.com/p/883684519e80" target="_blank" rel="noopener">OpenCV学习之路（二）——Mat对象</a></p>
+<h2 id="遍历Mat元素"><a href="#遍历Mat元素" class="headerlink" title="遍历Mat元素"></a><a href="#遍历Mat元素" title="遍历Mat元素"></a>遍历Mat元素</h2><p>对于Mat来说最主要的就是遍历其中的每个像素点然后进行操作了.Mat也提供了相应的方法来获取每个位置的元素.<br><code>public double[] get(int row,int col)</code><br>可以看到取出来的值是double[]数组的形式,我的理解是根据图片的类型的不同,数组中的信息也会不同,所以在操作的时候还是要根据当前操作的图片类型来进行区分.<br>遍历的方法就十分简单了,在下面贴出来:  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;size.height;i++)&#123;    </span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;size.width;j++)&#123;        </span><br><span class="line">        <span class="keyword">double</span>[] data = mat.get(i,j);        </span><br><span class="line">        <span class="comment">//在这里对data数组进行操作    </span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a><a href="#参考文章" title="参考文章"></a>参考文章</h2><p><a href="http://answers.opencv.org/question/14961/using-get-and-put-to-access-pixel-values-in-java/" target="_blank" rel="noopener">Using get() and put() to access pixel values in JAVA</a></p>
+<h1 id="Canny边缘检测"><a href="#Canny边缘检测" class="headerlink" title="Canny边缘检测"></a><a href="#Canny边缘检测" title="Canny边缘检测"></a>Canny边缘检测</h1><h2 id="简介-1"><a href="#简介-1" class="headerlink" title="简介"></a><a href="#简介-1" title="简介"></a>简介</h2><p>Canny 边缘检测算子是John F. Canny于 1986 年开发出来的一个多级边缘检测算法。更为重要的是 Canny 创立了边缘检测计（Computational theory of edge detection）解释这项技术如何工作。<br>Canny 的目标是找到一个最优的边缘检测算法，最优边缘检测的含义是:</p>
+<ul>
+<li>好的检测 - 算法能够尽可能多地标识出图像中的实际边缘</li>
+<li>好的定位 - 标识出的边缘要尽可能与实际图像中的实际边缘尽可能接近</li>
+<li>最小响应 - 图像中的边缘只能标识一次，并且可能存在的图像噪声不应标识为边缘.</li>
+</ul>
+<h2 id="Canny检测函数"><a href="#Canny检测函数" class="headerlink" title="Canny检测函数:"></a><a href="#Canny检测函数" title="Canny检测函数:"></a>Canny检测函数:</h2><p><code>public static void Canny(Mat image,Mat edges,double threshold1,double threshold2)</code><br>参数说明:</p>
+<ul>
+<li><strong>Mat image</strong>:输入的图像,为单通道的灰度图像</li>
+<li><strong>Mat edges</strong>:输出的图像,为单通道黑白图像</li>
+<li><strong>double threshold1,double threshold2</strong>:这两个参数表示阈值,这二个阈值中当中的小阈值用来控制边缘连接，大的阈值用来控制强边缘的初始分割.<br>使用方法还是十分简单的,在Java中函数的使用如下:<br><code>Imgproc.Canny(src,mat,100,130);</code></li>
+</ul>
+<h2 id="参考博客"><a href="#参考博客" class="headerlink" title="参考博客"></a><a href="#参考博客" title="参考博客"></a>参考博客</h2><p><a href="http://blog.csdn.net/morewindows/article/details/8239625" target="_blank" rel="noopener">【OpenCV入门指南】第三篇Canny边缘检测</a></p>
+<h1 id="Sobel算子"><a href="#Sobel算子" class="headerlink" title="Sobel算子"></a><a href="#Sobel算子" title="Sobel算子"></a>Sobel算子</h1><p>关于sobel算子的详细介绍可以参照博客: <a href="http://blog.csdn.net/autocyz/article/details/42676627" target="_blank" rel="noopener">【opencv2】Sobel算子原理与实现</a>以及<a href="http://blog.csdn.net/dcrmg/article/details/52280768" target="_blank" rel="noopener">Sobel算子及C++实现</a>.具体的细节就不再赘述.<br><strong>注:</strong>sobel算子对于垂直和水平方向的的边缘检测效果较好,而对于45°以及135°这样梯度的边缘检测来说,推荐先将图片旋转,使得要检测的边缘在竖直或者水平方向上效果会更好.</p>
+<h2 id="Sobel算子函数"><a href="#Sobel算子函数" class="headerlink" title="Sobel算子函数"></a><a href="#Sobel算子函数" title="Sobel算子函数"></a>Sobel算子函数</h2><p><code>public static void Sobel(Mat src,Mat dst,int ddepth,int dx,int dy,int ksize,double scale,double delta)</code><br>参数说明:</p>
+<ul>
+<li><strong>Mat src</strong>:输入的图像</li>
+<li><strong>Mat dst</strong>:输出的图像,需要和输入图像有相同的尺寸类型</li>
+<li><strong>int ddepth</strong>:输出图像的深度,默认可填-1</li>
+<li><strong>int dx,int dy</strong>:x,y方向上的差分阶数.</li>
+<li><strong>int ksize</strong>:Sobel核的大小,必须取1,3,5,7.</li>
+<li><strong>double scale</strong>:计算导数时的缩放因子,默认为1</li>
+<li><strong>double delta</strong>:可选的delta值.默认为0</li>
+</ul>
+<h3 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a><a href="#使用方法" title="使用方法"></a>使用方法</h3><p><code>Imgproc.Sobel(src,mat,-1,1,0);</code></p>
+<h2 id="参考博客-1"><a href="#参考博客-1" class="headerlink" title="参考博客"></a><a href="#参考博客-1" title="参考博客"></a>参考博客</h2><p><a href="http://blog.csdn.net/poem_qianmo/article/details/25560901" target="_blank" rel="noopener">【OpenCV入门教程之十二】OpenCV边缘检测：Canny算子,Sobel算子,Laplace算子,Scharr滤波器合辑</a><br><a href="http://blog.csdn.net/autocyz/article/details/42676627" target="_blank" rel="noopener">【opencv2】Sobel算子原理与实现</a><br><a href="http://blog.csdn.net/dcrmg/article/details/52280768" target="_blank" rel="noopener">Sobel算子及C++实现</a></p>
+<h1 id="霍夫变换提取直线"><a href="#霍夫变换提取直线" class="headerlink" title="霍夫变换提取直线"></a><a href="#霍夫变换提取直线" title="霍夫变换提取直线"></a>霍夫变换提取直线</h1><h2 id="简介-2"><a href="#简介-2" class="headerlink" title="简介"></a><a href="#简介-2" title="简介"></a>简介</h2><blockquote>
+<p>霍夫变换(Hough Transform)是图像处理中的一种特征提取技术，该过程在一个参数空间中通过计算累计结果的局部最大值得到一个符合该特定形状的集合作为霍夫变换结果。</p>
+<p>霍夫变换于1962年由PaulHough首次提出，最初的Hough变换是设计用来检测直线和曲线，起初的方法要求知道物体边界线的解析方程，但不需要有关区域位置的先验知识。这种方法的一个突出优点是分割结果的Robustness,即对数据的不完全或噪声不是非常敏感。然而，要获得描述边界的解析表达常常是不可能的。　后于1972年由Richard Duda &amp; Peter Hart推广使用，经典霍夫变换用来检测图像中的直线，后来霍夫变换扩展到任意形状物体的识别，多为圆和椭圆。霍夫变换运用两个坐标空间之间的变换将在一个空间中具有相同形状的曲线或直线映射到另一个坐标空间的一个点上形成峰值，从而把检测任意形状的问题转化为统计峰值问题.</p>
+</blockquote>
+<h2 id="Java中的霍夫变换函数"><a href="#Java中的霍夫变换函数" class="headerlink" title="Java中的霍夫变换函数"></a><a href="#Java中的霍夫变换函数" title="Java中的霍夫变换函数"></a>Java中的霍夫变换函数</h2><ul>
+<li><code>static void HoughLines(Mat image, Mat lines, double rho, double theta, int threshold)</code></li>
+<li><code>static void HoughLinesP(Mat image, Mat lines, double rho, double theta, int threshold)</code></li>
+<li><code>static void HoughCircles(Mat image, Mat circles, int method, double dp, double minDist)</code><br>一共有三种h函数,分别是标准霍夫变换,累计概率霍夫变换以及霍夫圆变换.<br>这里只介绍一下第二个累计概率霍夫变换的函数.<br>参数说明:</li>
+<li><strong>Mat image</strong>:表示输入的图像</li>
+<li><strong>Mat lines</strong>:表示经过检测之后得到的直线的矢量,存储的信息为x1,y1,x2,y2四个点的坐标.</li>
+<li><strong>double rho</strong>:直线搜索时的进步单位半径</li>
+<li><strong>double theta</strong>:直线搜索时进步单位角度</li>
+<li><strong>int threshold</strong>:累加平面的阈值参数,只有大于该阈值的结果才能被检测通过.</li>
+</ul>
+<h3 id="Java使用"><a href="#Java使用" class="headerlink" title="Java使用"></a><a href="#Java使用" title="Java使用"></a>Java使用</h3><p><code>Imgproc.HoughLinesP(src,mat,1,Math.acos(-1)/45,230);</code></p>
+<h3 id="在图片上将所有的直线都画出来"><a href="#在图片上将所有的直线都画出来" class="headerlink" title="在图片上将所有的直线都画出来:"></a><a href="#在图片上将所有的直线都画出来" title="在图片上将所有的直线都画出来:"></a>在图片上将所有的直线都画出来:</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;size.height;i++)&#123;            </span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;size.width;j++)&#123;                </span><br><span class="line">        <span class="keyword">double</span>[] data = mat.get(i,j);                </span><br><span class="line">        Imgproc.line(dstImage, <span class="keyword">new</span> Point(data[<span class="number">0</span>],data[<span class="number">1</span>]),<span class="keyword">new</span> Point(data[<span class="number">2</span>],data[<span class="number">3</span>]),<span class="keyword">new</span> Scalar(<span class="number">255</span>,<span class="number">0</span>,<span class="number">0</span>),<span class="number">1</span>);            </span><br><span class="line">    &#125;        </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="参考博客-2"><a href="#参考博客-2" class="headerlink" title="参考博客"></a><a href="#参考博客-2" title="参考博客"></a>参考博客</h2><p><a href="http://blog.csdn.net/poem_qianmo/article/details/26977557" target="_blank" rel="noopener">【OpenCV入门教程之十四】OpenCV霍夫变换：霍夫线变换，霍夫圆变换合辑</a></p>
+<h1 id="图像细化-Zhang快速并行算法"><a href="#图像细化-Zhang快速并行算法" class="headerlink" title="图像细化(Zhang快速并行算法)"></a><a href="#图像细化-Zhang快速并行算法" title="图像细化(Zhang快速并行算法)"></a>图像细化(Zhang快速并行算法)</h1><p>图像细化也称为图像的骨架化,简单的说就是把一条直线的轮廓变细,只剩下一条单位像素的直线.<br>算法的核心解释如下:</p>
+<ul>
+<li>首先定义一个矩阵:<br><a href="http://dl2.iteye.com/upload/attachment/0112/8663/0160307e-0e5e-37a6-b174-1539a4dbff19.png" target="_blank" rel="noopener"><img src="http://dl2.iteye.com/upload/attachment/0112/8663/0160307e-0e5e-37a6-b174-1539a4dbff19.png" alt=""></a></li>
+<li>然后对于P1这个点进行讨论:</li>
+</ul>
+<ol>
+<li>2 &lt;= N(P1) &lt;= 6，N(x)为x的8领域中黑点（背景点）的个数</li>
+<li>A(P1) = 1，A(x)为P2-P8之间按序前后分别为0、1的对数</li>
+<li>P2*P4*P6 = 0</li>
+<li>P4*P6*P8 = 0<br>满足上述条件的P1点即可删去.</li>
+</ol>
+<ul>
+<li>重复上述步骤直到没有可删除的点为止.</li>
+</ul>
+<h3 id="算法的Java实现"><a href="#算法的Java实现" class="headerlink" title="算法的Java实现:"></a><a href="#算法的Java实现" title="算法的Java实现:"></a>算法的Java实现:</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">thinImage</span><span class="params">(Mat src, Mat thin, Integer maxIterations)</span></span>&#123;        </span><br><span class="line">    maxIterations = -<span class="number">1</span>;        </span><br><span class="line">    <span class="keyword">int</span> width = src.cols();        </span><br><span class="line">    <span class="keyword">int</span> height = src.rows();        </span><br><span class="line">    thin = src.clone();        </span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">0</span>;        </span><br><span class="line">    <span class="keyword">while</span> (<span class="keyword">true</span>)&#123;            </span><br><span class="line">        count++;            </span><br><span class="line">        <span class="keyword">if</span>(maxIterations != -<span class="number">1</span> &amp;&amp; count &gt; maxIterations)<span class="comment">//限制迭代次数                </span></span><br><span class="line">        <span class="keyword">break</span>;            </span><br><span class="line">        Stack&lt;Point&gt; flag = <span class="keyword">new</span> Stack&lt;Point&gt;();<span class="comment">//存放要删除的点的信息            </span></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i &lt; height; i++)&#123;                </span><br><span class="line">            Mat p = thin.row(i);                </span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>; j &lt; width; j++)&#123;                    </span><br><span class="line">                <span class="keyword">double</span>[] zero = &#123;<span class="number">0</span>&#125;;                    </span><br><span class="line">                <span class="keyword">double</span>[] p1 = p.get(i,j);<span class="comment">//p1里面只有一个元素 应该就是无符号整形的灰度值                    </span></span><br><span class="line">                <span class="keyword">double</span>[] p2 = (i==<span class="number">0</span>)?zero:thin.get(i-<span class="number">1</span>,j);                    </span><br><span class="line">                <span class="keyword">double</span>[] p3 = (i==<span class="number">0</span> || j==width-<span class="number">1</span>)?zero:thin.get(i-<span class="number">1</span>,j+<span class="number">1</span>);                    </span><br><span class="line">                <span class="keyword">double</span>[] p4 = (j == width - <span class="number">1</span>) ? zero : thin.get(i, j + <span class="number">1</span>);                    </span><br><span class="line">                <span class="keyword">double</span>[] p5 = (i==height-<span class="number">1</span> || j==width-<span class="number">1</span>)?zero:thin.get(i+<span class="number">1</span>,j+<span class="number">1</span>);                    </span><br><span class="line">                <span class="keyword">double</span>[] p6 = (i == height - <span class="number">1</span>) ? zero : thin.get(i + <span class="number">1</span>, j);                    </span><br><span class="line">                <span class="keyword">double</span>[] p7 = (i == height - <span class="number">1</span> || j == <span class="number">0</span>) ? zero : thin.get(i + <span class="number">1</span>, j - <span class="number">1</span>);                    </span><br><span class="line">                <span class="keyword">double</span>[] p8 = (j==<span class="number">0</span>)?zero:thin.get(i,j-<span class="number">1</span>);                    </span><br><span class="line">                <span class="keyword">double</span>[] p9 = (i==<span class="number">0</span> || j==<span class="number">0</span>)?zero:thin.get(i-<span class="number">1</span>,j-<span class="number">1</span>);                    </span><br><span class="line">                <span class="keyword">if</span>((p2[<span class="number">0</span>]+p3[<span class="number">0</span>]+p4[<span class="number">0</span>]+p5[<span class="number">0</span>]+p6[<span class="number">0</span>]+p7[<span class="number">0</span>]+p8[<span class="number">0</span>]+p9[<span class="number">0</span>])&gt;=<span class="number">2</span> &amp;&amp; (p2[<span class="number">0</span>]+p3[<span class="number">0</span>]+p4[<span class="number">0</span>]+p5[<span class="number">0</span>]+p6[<span class="number">0</span>]+p7[<span class="number">0</span>]+p8[<span class="number">0</span>]+p9[<span class="number">0</span>])&lt;=<span class="number">6</span>)&#123;                        </span><br><span class="line">                    <span class="keyword">int</span> ap = <span class="number">0</span>;                        </span><br><span class="line">                    <span class="keyword">if</span>(p2[<span class="number">0</span>] == <span class="number">0</span> &amp;&amp; p3[<span class="number">0</span>]== <span class="number">1</span>) ++ap;                        </span><br><span class="line">                    <span class="keyword">if</span>(p3[<span class="number">0</span>] == <span class="number">0</span> &amp;&amp; p4[<span class="number">0</span>]== <span class="number">1</span>) ++ap;                        </span><br><span class="line">                    <span class="keyword">if</span>(p4[<span class="number">0</span>] == <span class="number">0</span> &amp;&amp; p5[<span class="number">0</span>]== <span class="number">1</span>) ++ap;                        </span><br><span class="line">                    <span class="keyword">if</span>(p5[<span class="number">0</span>] == <span class="number">0</span> &amp;&amp; p6[<span class="number">0</span>]== <span class="number">1</span>) ++ap;                        </span><br><span class="line">                    <span class="keyword">if</span>(p6[<span class="number">0</span>] == <span class="number">0</span> &amp;&amp; p7[<span class="number">0</span>]== <span class="number">1</span>) ++ap;                        </span><br><span class="line">                    <span class="keyword">if</span>(p7[<span class="number">0</span>] == <span class="number">0</span> &amp;&amp; p8[<span class="number">0</span>]== <span class="number">1</span>) ++ap;                        </span><br><span class="line">                    <span class="keyword">if</span>(p8[<span class="number">0</span>] == <span class="number">0</span> &amp;&amp; p9[<span class="number">0</span>]== <span class="number">1</span>) ++ap;                        </span><br><span class="line">                    <span class="keyword">if</span>(p9[<span class="number">0</span>] == <span class="number">0</span> &amp;&amp; p2[<span class="number">0</span>]== <span class="number">1</span>) ++ap;                        </span><br><span class="line">                    <span class="keyword">if</span>(ap == <span class="number">1</span>)&#123;                            </span><br><span class="line">                        <span class="keyword">if</span>(p2[<span class="number">0</span>]*p4[<span class="number">0</span>]*p6[<span class="number">0</span>] == <span class="number">0</span>)&#123;                                </span><br><span class="line">                            <span class="keyword">if</span>(p4[<span class="number">0</span>]*p6[<span class="number">0</span>]*p8[<span class="number">0</span>] == <span class="number">0</span>)&#123;                                    </span><br><span class="line">                                <span class="comment">//标记                                    </span></span><br><span class="line">                                flag.push(<span class="keyword">new</span> Point(i,j));                                </span><br><span class="line">                                &#125;                            </span><br><span class="line">                        &#125;                        </span><br><span class="line">                    &#125;                    </span><br><span class="line">                &#125;                </span><br><span class="line">            &#125;            </span><br><span class="line">        &#125;            </span><br><span class="line">        <span class="comment">//删除标记的点            </span></span><br><span class="line">        Iterator iterator = flag.iterator();            </span><br><span class="line">        <span class="keyword">while</span> (iterator.hasNext())&#123;                </span><br><span class="line">            <span class="keyword">byte</span>[] zero = &#123;<span class="number">0</span>&#125;;                </span><br><span class="line">            Point p = (Point) iterator.next();                </span><br><span class="line">            thin.put((<span class="keyword">int</span>)p.x,(<span class="keyword">int</span>)p.y,zero);            </span><br><span class="line">        &#125;            </span><br><span class="line">        <span class="comment">//判断是否为空,若否则清空继续            </span></span><br><span class="line">        <span class="keyword">if</span>(flag.empty()) <span class="keyword">break</span>;            </span><br><span class="line">            <span class="keyword">else</span> flag.clear();            </span><br><span class="line">            <span class="comment">/*            </span></span><br><span class="line"><span class="comment">            * 重复一遍            </span></span><br><span class="line"><span class="comment">            * */</span>            </span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i &lt; height; i++)&#123;                </span><br><span class="line">            Mat p = thin.row(i);                </span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>; j &lt; width; j++)&#123;                    </span><br><span class="line">                <span class="keyword">double</span>[] zero = &#123;<span class="number">0</span>&#125;;                    </span><br><span class="line">                <span class="keyword">double</span>[] p1 = p.get(i,j);<span class="comment">//p1里面只有一个元素 应该就是无符号整形的灰度值                    </span></span><br><span class="line">                <span class="keyword">double</span>[] p2 = (i==<span class="number">0</span>)?zero:thin.get(i-<span class="number">1</span>,j);                    </span><br><span class="line">                <span class="keyword">double</span>[] p3 = (i==<span class="number">0</span> || j==width-<span class="number">1</span>)?zero:thin.get(i-<span class="number">1</span>,j+<span class="number">1</span>);                    </span><br><span class="line">                <span class="keyword">double</span>[] p4 = (j == width - <span class="number">1</span>) ? zero : thin.get(i, j + <span class="number">1</span>);                    </span><br><span class="line">                <span class="keyword">double</span>[] p5 = (i==height-<span class="number">1</span> || j==width-<span class="number">1</span>)?zero:thin.get(i+<span class="number">1</span>,j+<span class="number">1</span>);                    </span><br><span class="line">                <span class="keyword">double</span>[] p6 = (i == height - <span class="number">1</span>) ? zero : thin.get(i + <span class="number">1</span>, j);                    </span><br><span class="line">                <span class="keyword">double</span>[] p7 = (i == height - <span class="number">1</span> || j == <span class="number">0</span>) ? zero : thin.get(i + <span class="number">1</span>, j - <span class="number">1</span>);                    </span><br><span class="line">                <span class="keyword">double</span>[] p8 = (j==<span class="number">0</span>)?zero:thin.get(i,j-<span class="number">1</span>);                    </span><br><span class="line">                <span class="keyword">double</span>[] p9 = (i==<span class="number">0</span> || j==<span class="number">0</span>)?zero:thin.get(i-<span class="number">1</span>,j-<span class="number">1</span>);                    </span><br><span class="line">                <span class="keyword">if</span>((p2[<span class="number">0</span>]+p3[<span class="number">0</span>]+p4[<span class="number">0</span>]+p5[<span class="number">0</span>]+p6[<span class="number">0</span>]+p7[<span class="number">0</span>]+p8[<span class="number">0</span>]+p9[<span class="number">0</span>])&gt;=<span class="number">2</span> &amp;&amp; (p2[<span class="number">0</span>]+p3[<span class="number">0</span>]+p4[<span class="number">0</span>]+p5[<span class="number">0</span>]+p6[<span class="number">0</span>]+p7[<span class="number">0</span>]+p8[<span class="number">0</span>]+p9[<span class="number">0</span>])&lt;=<span class="number">6</span>)&#123;                        </span><br><span class="line">                    <span class="keyword">int</span> ap = <span class="number">0</span>;                        </span><br><span class="line">                    <span class="keyword">if</span>(p2[<span class="number">0</span>] == <span class="number">0</span> &amp;&amp; p3[<span class="number">0</span>]== <span class="number">1</span>) ++ap;                        </span><br><span class="line">                    <span class="keyword">if</span>(p3[<span class="number">0</span>] == <span class="number">0</span> &amp;&amp; p4[<span class="number">0</span>]== <span class="number">1</span>) ++ap;                        </span><br><span class="line">                    <span class="keyword">if</span>(p4[<span class="number">0</span>] == <span class="number">0</span> &amp;&amp; p5[<span class="number">0</span>]== <span class="number">1</span>) ++ap;                        </span><br><span class="line">                    <span class="keyword">if</span>(p5[<span class="number">0</span>] == <span class="number">0</span> &amp;&amp; p6[<span class="number">0</span>]== <span class="number">1</span>) ++ap;                        </span><br><span class="line">                    <span class="keyword">if</span>(p6[<span class="number">0</span>] == <span class="number">0</span> &amp;&amp; p7[<span class="number">0</span>]== <span class="number">1</span>) ++ap;                        </span><br><span class="line">                    <span class="keyword">if</span>(p7[<span class="number">0</span>] == <span class="number">0</span> &amp;&amp; p8[<span class="number">0</span>]== <span class="number">1</span>) ++ap;                        </span><br><span class="line">                    <span class="keyword">if</span>(p8[<span class="number">0</span>] == <span class="number">0</span> &amp;&amp; p9[<span class="number">0</span>]== <span class="number">1</span>) ++ap;                        </span><br><span class="line">                    <span class="keyword">if</span>(p9[<span class="number">0</span>] == <span class="number">0</span> &amp;&amp; p2[<span class="number">0</span>]== <span class="number">1</span>) ++ap;                        </span><br><span class="line">                    <span class="keyword">if</span>(ap == <span class="number">1</span>)&#123;                            </span><br><span class="line">                        <span class="keyword">if</span>(p2[<span class="number">0</span>]*p4[<span class="number">0</span>]*p6[<span class="number">0</span>] == <span class="number">0</span>)&#123;                                </span><br><span class="line">                            <span class="keyword">if</span>(p4[<span class="number">0</span>]*p6[<span class="number">0</span>]*p8[<span class="number">0</span>] == <span class="number">0</span>)&#123;                                    </span><br><span class="line">                                <span class="comment">//标记                                    </span></span><br><span class="line">                                flag.push(<span class="keyword">new</span> Point(i,j));                                </span><br><span class="line">                            &#125;                            </span><br><span class="line">                        &#125;                        </span><br><span class="line">                    &#125;                    </span><br><span class="line">                &#125;                </span><br><span class="line">            &#125;            </span><br><span class="line">        &#125;            </span><br><span class="line">        <span class="comment">//删除标记的点            </span></span><br><span class="line">        <span class="keyword">while</span> (iterator.hasNext())&#123;                </span><br><span class="line">            <span class="keyword">byte</span>[] zero = &#123;<span class="number">0</span>&#125;;                </span><br><span class="line">            Point p = (Point) iterator.next();                </span><br><span class="line">            thin.put((<span class="keyword">int</span>)p.x,(<span class="keyword">int</span>)p.y,zero);            </span><br><span class="line">        &#125;            </span><br><span class="line">        <span class="comment">//判断是否为空,若否则清空继续            </span></span><br><span class="line">        <span class="keyword">if</span>(flag.empty()) <span class="keyword">break</span>;            </span><br><span class="line">        <span class="keyword">else</span> flag.clear();        </span><br><span class="line">    &#125;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="参考博客-3"><a href="#参考博客-3" class="headerlink" title="参考博客"></a><a href="#参考博客-3" title="参考博客"></a>参考博客</h2><p><a href="http://lps-683.iteye.com/blog/2254857" target="_blank" rel="noopener">openCV综合运用 ———- 图像细化、线段长度、平行线距离检测</a></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a><a href="#总结" title="总结"></a>总结</h1><p>到这里OpenCV的学习也告一段落了,对于OpenCV的学习还是十分的友好的,csdn上面的博客也非常的多以及详细,本人也只是在Java中再次尝试了一遍过程而已.对于算法的细节没有做太多的考究,因为现阶段只是能够使用即可.但是感觉上OpenCV对于Java的支持并不是特别的好,还是尝试使用C++来做算法的开发更加的好,而且3.0+版本的资料仍旧以英文为主,可能在一开始会在函数的使用上遇到一些困难,但是熟悉之后,和之前版本也没有太大的区别.就写到这里吧.</p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/标签/Java/" rel="tag"># Java</a>
+            
+              <a href="/标签/OpenCV/" rel="tag"># OpenCV</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2017/07/08/OpenCV学习笔记-Java实现-一/" rel="next" title="OpenCV学习笔记--Java实现(一)">
+                  <i class="fa fa-chevron-left"></i> OpenCV学习笔记--Java实现(一)
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2017/07/18/LeetCode刷题-461-Hamming-Distance/" rel="prev" title="LeetCode刷题--461.Hamming Distance">
+                  LeetCode刷题--461.Hamming Distance <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#简述"><span class="nav-number">1.</span> <span class="nav-text">简述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#官方帮助文档"><span class="nav-number">2.</span> <span class="nav-text">官方帮助文档</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#主要使用到的Package的简介"><span class="nav-number">2.1.</span> <span class="nav-text">主要使用到的Package的简介</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#开始-直方图均衡化"><span class="nav-number">3.</span> <span class="nav-text">开始-直方图均衡化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#直方图"><span class="nav-number">3.1.</span> <span class="nav-text">直方图:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#直方图均衡化"><span class="nav-number">3.2.</span> <span class="nav-text">直方图均衡化:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#均衡化函数-equalizeHist"><span class="nav-number">3.3.</span> <span class="nav-text">均衡化函数:equalizeHist()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考教程"><span class="nav-number">3.4.</span> <span class="nav-text">参考教程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#图像的降噪处理-高斯滤波器"><span class="nav-number">4.</span> <span class="nav-text">图像的降噪处理-高斯滤波器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">4.1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#高斯滤波器函数"><span class="nav-number">4.2.</span> <span class="nav-text">高斯滤波器函数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Mat类的操作"><span class="nav-number">5.</span> <span class="nav-text">Mat类的操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Mat类的理解"><span class="nav-number">5.1.</span> <span class="nav-text">Mat类的理解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#遍历Mat元素"><span class="nav-number">5.2.</span> <span class="nav-text">遍历Mat元素</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文章"><span class="nav-number">5.3.</span> <span class="nav-text">参考文章</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Canny边缘检测"><span class="nav-number">6.</span> <span class="nav-text">Canny边缘检测</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介-1"><span class="nav-number">6.1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Canny检测函数"><span class="nav-number">6.2.</span> <span class="nav-text">Canny检测函数:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考博客"><span class="nav-number">6.3.</span> <span class="nav-text">参考博客</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Sobel算子"><span class="nav-number">7.</span> <span class="nav-text">Sobel算子</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Sobel算子函数"><span class="nav-number">7.1.</span> <span class="nav-text">Sobel算子函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用方法"><span class="nav-number">7.1.1.</span> <span class="nav-text">使用方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考博客-1"><span class="nav-number">7.2.</span> <span class="nav-text">参考博客</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#霍夫变换提取直线"><span class="nav-number">8.</span> <span class="nav-text">霍夫变换提取直线</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介-2"><span class="nav-number">8.1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java中的霍夫变换函数"><span class="nav-number">8.2.</span> <span class="nav-text">Java中的霍夫变换函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Java使用"><span class="nav-number">8.2.1.</span> <span class="nav-text">Java使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在图片上将所有的直线都画出来"><span class="nav-number">8.2.2.</span> <span class="nav-text">在图片上将所有的直线都画出来:</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考博客-2"><span class="nav-number">8.3.</span> <span class="nav-text">参考博客</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#图像细化-Zhang快速并行算法"><span class="nav-number">9.</span> <span class="nav-text">图像细化(Zhang快速并行算法)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#算法的Java实现"><span class="nav-number">9.0.1.</span> <span class="nav-text">算法的Java实现:</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考博客-3"><span class="nav-number">9.1.</span> <span class="nav-text">参考博客</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">10.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" src="/images/misaka.jpg" alt="MisakaTang">
+  <p class="site-author-name" itemprop="name">MisakaTang</p>
+  <div class="site-description" itemprop="description">The limits of my language are the limits of my world</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/归档">
+        
+          <span class="site-state-item-count">77</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">65</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/TangMisaka23001" title="GitHub &rarr; https://github.com/TangMisaka23001" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:mikasatang@gmail.com" title="E-Mail &rarr; mailto:mikasatang@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://www.douban.com/people/misakatang/" title="豆瓣主页 &rarr; https://www.douban.com/people/misakatang/" rel="noopener" target="_blank"><i class="fa fa-fw fa-globe"></i>豆瓣主页</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://xiaoshidefeng.github.io/" title="https://xiaoshidefeng.github.io/" rel="noopener" target="_blank">ChenWei的博客</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://blog.bbchen.top/" title="http://blog.bbchen.top/" rel="noopener" target="_blank">BB chen的漂流记</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://blog.zhuzhenyuan.cn/" title="http://blog.zhuzhenyuan.cn/" rel="noopener" target="_blank">Aurthur_的博客</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://pyking.cn/" title="http://pyking.cn/" rel="noopener" target="_blank">1ni的博客</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MisakaTang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+  
+  <script>
+  function leancloudSelector(url) {
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = visitors.getAttribute('id').trim();
+      var title = visitors.getAttribute('data-flag-title').trim();
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+            
+              .catch(error => {
+                console.log('Failed to save visitor count', error);
+              })
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.log('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return element.getAttribute('id').trim();
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.url;
+            var time = item.time;
+            leancloudSelector(url).innerText = time;
+          }
+          for (var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.log('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=M1hXHB2YJ8SC7uPYi7vsCKwU-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id': 'M1hXHB2YJ8SC7uPYi7vsCKwU-gzGzoHsz',
+            'X-LC-Key': '5Ks1w8pWHHdOYOrOYiU4SX1l',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        const localhost = /http:\/\/(localhost|127.0.0.1|0.0.0.0)/;
+        if (localhost.test(document.URL)) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+    
+  
+  <script color="0,0,255" opacity="0.5" zindex="-1" count="99" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

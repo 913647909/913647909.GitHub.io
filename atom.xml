@@ -1,0 +1,560 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>MisakaTang&#39;s Blog</title>
+  
+  
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://misakatang.cn/"/>
+  <updated>2020-09-12T05:04:59.741Z</updated>
+  <id>http://misakatang.cn/</id>
+  
+  <author>
+    <name>MisakaTang</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>服务器迁移到树莓派</title>
+    <link href="http://misakatang.cn/2020/09/12/raspberry-pi-install-ubuntu-server/"/>
+    <id>http://misakatang.cn/2020/09/12/raspberry-pi-install-ubuntu-server/</id>
+    <published>2020-09-12T12:04:50.000Z</published>
+    <updated>2020-09-12T05:04:59.741Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h1&gt;&lt;p&gt;看了一下在阿里云买的hk服务器每个月得34,算下来一年也不少钱了&lt;/p&gt;
+&lt;p&gt;而且内存也开始不是很够用了就打算把服务都迁移到树莓派上(主要是ttrss),然后就折腾了将近一个星期都差不多迁移完成了.&lt;/p&gt;
+&lt;p&gt;唯一的深坑就是某些docker镜像不支持arm架构没法继续使用了吧(比如Huginn).&lt;br&gt;
+    
+    </summary>
+    
+      <category term="运维" scheme="http://misakatang.cn/%E5%88%86%E7%B1%BB/%E8%BF%90%E7%BB%B4/"/>
+    
+    
+      <category term="docker" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/docker/"/>
+    
+      <category term="树莓派" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/%E6%A0%91%E8%8E%93%E6%B4%BE/"/>
+    
+      <category term="Linux" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/Linux/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>深入浅出现代Web编程(全栈公开课 2020) 笔记</title>
+    <link href="http://misakatang.cn/2020/08/30/full-stack-open-note/"/>
+    <id>http://misakatang.cn/2020/08/30/full-stack-open-note/</id>
+    <published>2020-08-30T14:58:27.000Z</published>
+    <updated>2020-09-12T05:04:59.741Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;深入浅出现代Web编程-https-fullstackopen-com-zh&quot;&gt;&lt;a href=&quot;#深入浅出现代Web编程-https-fullstackopen-com-zh&quot; class=&quot;headerlink&quot; title=&quot;深入浅出现代Web编程:https://fullstackopen.com/zh/&quot;&gt;&lt;/a&gt;深入浅出现代Web编程:&lt;a href=&quot;https://fullstackopen.com/zh/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;https://fullstackopen.com/zh/&lt;/a&gt;&lt;/h1&gt;&lt;p&gt;&lt;img src=&quot;https://misakatang.oss-cn-beijing.aliyuncs.com/blog_picture/fullstack.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;
+    
+    </summary>
+    
+      <category term="笔记" scheme="http://misakatang.cn/%E5%88%86%E7%B1%BB/%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="Xmind" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/Xmind/"/>
+    
+      <category term="React" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/React/"/>
+    
+      <category term="Javascript" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/Javascript/"/>
+    
+      <category term="Express" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/Express/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>The Log: What every software engineer should know about real-time data&#39;s unifying abstraction</title>
+    <link href="http://misakatang.cn/2020/04/29/the-log/"/>
+    <id>http://misakatang.cn/2020/04/29/the-log/</id>
+    <published>2020-04-29T19:54:08.000Z</published>
+    <updated>2020-09-12T05:04:59.741Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;第一部分-什么是日志&quot;&gt;&lt;a href=&quot;#第一部分-什么是日志&quot; class=&quot;headerlink&quot; title=&quot;第一部分: 什么是日志&quot;&gt;&lt;/a&gt;第一部分: 什么是日志&lt;/h2&gt;&lt;h3 id=&quot;什么是日志&quot;&gt;&lt;a href=&quot;#什么是日志&quot; class=&quot;headerlink&quot; title=&quot;什么是日志&quot;&gt;&lt;/a&gt;什么是日志&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;https://misakatang.oss-cn-beijing.aliyuncs.com/blog_picture/the-log/image-20200428143046866.png&quot; alt=&quot;image-20200428143046866&quot;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;新记录被添加到尾部&lt;/li&gt;
+&lt;li&gt;读取顺序从左至右&lt;/li&gt;
+&lt;li&gt;每个记录都会被赋予一个&lt;strong&gt;唯一的&lt;/strong&gt;，&lt;strong&gt;顺序&lt;/strong&gt;的编号&lt;ul&gt;
+&lt;li&gt;日志记录的顺序定义了一个“时间”的概念&lt;/li&gt;
+&lt;li&gt;日志的编号可以理解为一个时间戳（相对时间）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;日志和文件或者(数据)表没有区别&lt;/li&gt;
+&lt;li&gt;日志的目的是：用于记录发生了什么和什么时候发生的  ==&amp;gt; &lt;strong&gt;分布式系统所关心的核心问题&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;日志的类型：&lt;ul&gt;
+&lt;li&gt;应用日志：非结构化的错误信息或者应用跟踪信息&lt;/li&gt;
+&lt;li&gt;数据日志：为程序访问设计 &lt;strong&gt;这里讨论的类型&lt;/strong&gt;
+    
+    </summary>
+    
+      <category term="笔记" scheme="http://misakatang.cn/%E5%88%86%E7%B1%BB/%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="分布式" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
+    
+      <category term="日志" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/%E6%97%A5%E5%BF%97/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>我的周报(3)</title>
+    <link href="http://misakatang.cn/2020/04/25/weekly-report-3/"/>
+    <id>http://misakatang.cn/2020/04/25/weekly-report-3/</id>
+    <published>2020-04-25T13:58:57.000Z</published>
+    <updated>2020-09-12T05:04:59.741Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;img src=&quot;https://misakatang.oss-cn-beijing.aliyuncs.com/snipaste/Snipaste_2020-04-25_14-50-09.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;
+    
+    </summary>
+    
+      <category term="周报" scheme="http://misakatang.cn/%E5%88%86%E7%B1%BB/%E5%91%A8%E6%8A%A5/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>重新折腾了一下博客的CI脚本</title>
+    <link href="http://misakatang.cn/2020/04/25/reconfig-blog-ci/"/>
+    <id>http://misakatang.cn/2020/04/25/reconfig-blog-ci/</id>
+    <published>2020-04-25T13:58:28.000Z</published>
+    <updated>2020-09-12T05:04:59.741Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;strong&gt;leancloud_counter_security插件生成的leancoud.memo问题&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;之前在配置了leancloud_counter_security插件之后就没有在意了,但是最近注意到没有收到ci的构建邮件了就去重新看了一下ci配置,果然还是问题重重.&lt;br&gt;
+    
+    </summary>
+    
+      <category term="问题解决" scheme="http://misakatang.cn/%E5%88%86%E7%B1%BB/%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/"/>
+    
+    
+      <category term="CI" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/CI/"/>
+    
+      <category term="Travis CI" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/Travis-CI/"/>
+    
+      <category term="hexo" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/hexo/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Redis分布式锁设计和实现</title>
+    <link href="http://misakatang.cn/2020/04/19/redis-distributed-lock-summary/"/>
+    <id>http://misakatang.cn/2020/04/19/redis-distributed-lock-summary/</id>
+    <published>2020-04-19T17:25:09.000Z</published>
+    <updated>2020-09-12T05:04:59.741Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;img src=&quot;https://misakatang.oss-cn-beijing.aliyuncs.com/blog_picture/distributed-locks-with-redis.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;
+    
+    </summary>
+    
+      <category term="笔记" scheme="http://misakatang.cn/%E5%88%86%E7%B1%BB/%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="redis" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/redis/"/>
+    
+      <category term="分布式锁" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Fork/Join框架论文笔记和总结</title>
+    <link href="http://misakatang.cn/2020/04/15/java-fork-join-framework-note/"/>
+    <id>http://misakatang.cn/2020/04/15/java-fork-join-framework-note/</id>
+    <published>2020-04-15T19:45:42.000Z</published>
+    <updated>2020-09-12T05:04:59.741Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;img src=&quot;https://misakatang.oss-cn-beijing.aliyuncs.com/blog_picture/fork-join%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;
+    
+    </summary>
+    
+      <category term="笔记" scheme="http://misakatang.cn/%E5%88%86%E7%B1%BB/%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="Java" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/Java/"/>
+    
+      <category term="concurrent" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/concurrent/"/>
+    
+      <category term="Doug Lea" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/Doug-Lea/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>SpringBoot单元测试小结</title>
+    <link href="http://misakatang.cn/2020/04/14/springboot-unit-test-summary/"/>
+    <id>http://misakatang.cn/2020/04/14/springboot-unit-test-summary/</id>
+    <published>2020-04-14T20:26:40.000Z</published>
+    <updated>2020-09-12T05:04:59.741Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;对于测试的重要性，虽然不想说什么漂亮话，但是作为敏捷开发实践的重要一环，以及本着对自己代码负责的理念，在项目中保证必要的单元测试和覆盖率还是非常重要的。&lt;/p&gt;
+&lt;p&gt;在研究怎么在SpringBoot中优雅的进行单元测试的过程中，主要参考了：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href=&quot;https://tech.youzan.com/youzan-test-practice/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;有赞单元测试实践&lt;/a&gt;:主要参考了工具选型的思路和整合的思路。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://docs.spring.io/spring/docs/current/spring-framework-reference/testing.html&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;SpringTest文档&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-testing&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;SpringBoot Test文档&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://jack80342.gitbook.io/spring-boot/iv.-spring-boot-features/43.-testing&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;SpringBoot 中文翻译文档–测试&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;在文档中主要参考了MockMvc的使用,关于MockMvc之前也写过blog:&lt;a href=&quot;https://misakatang.cn/2018/10/18/%E7%BF%BB%E8%AF%91-Spring-MVC-Test-Framework-MockMvc%E4%BD%BF%E7%94%A8/&quot;&gt;翻译:Spring MVC Test Framework–MockMvc使用&lt;/a&gt;.在当时主要是尝试了对单个项目的端口测试,在这次研究中主要考虑如何方便的对单个服务中依赖的服务进行打桩(stub)和Mock.&lt;br&gt;
+    
+    </summary>
+    
+      <category term="技术教程" scheme="http://misakatang.cn/%E5%88%86%E7%B1%BB/%E6%8A%80%E6%9C%AF%E6%95%99%E7%A8%8B/"/>
+    
+    
+      <category term="Java" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/Java/"/>
+    
+      <category term="SpringBoot" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/SpringBoot/"/>
+    
+      <category term="Mock" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/Mock/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>我的骑行日志(1) -- 夜行西湖</title>
+    <link href="http://misakatang.cn/2019/10/27/riding-diary-1/"/>
+    <id>http://misakatang.cn/2019/10/27/riding-diary-1/</id>
+    <published>2019-10-27T16:43:51.000Z</published>
+    <updated>2020-09-12T05:04:59.741Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;img src=&quot;https://misakatang.oss-cn-beijing.aliyuncs.com/picture/20191022_204648.jpg&quot; alt=&quot;&quot;&gt;&lt;br&gt;
+    
+    </summary>
+    
+      <category term="骑行日志" scheme="http://misakatang.cn/%E5%88%86%E7%B1%BB/%E9%AA%91%E8%A1%8C%E6%97%A5%E5%BF%97/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>我的周报(2)</title>
+    <link href="http://misakatang.cn/2019/10/27/weekly-report-2/"/>
+    <id>http://misakatang.cn/2019/10/27/weekly-report-2/</id>
+    <published>2019-10-27T15:07:21.000Z</published>
+    <updated>2020-09-12T05:04:59.741Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;写在前面&quot;&gt;&lt;a href=&quot;#写在前面&quot; class=&quot;headerlink&quot; title=&quot;写在前面&quot;&gt;&lt;/a&gt;写在前面&lt;/h1&gt;&lt;p&gt;之前也是写了一篇&lt;a href=&quot;https://misakatang.cn/2019/09/08/what-new-things-this-week/&quot;&gt;这周搞的一些新东西&lt;/a&gt;,其实当时就是看了V2站长开始写周报也有了点想法但是想想似乎每周也没有那么多可写的内容,就先随便写了一篇.但是最近也算是有点清闲又骚了很多新的东西就不免想要记录一下,正好趁着给博客重新进行了一波整理分类之后也是下了开始写周报的决心吧,但是频率可能也就是2周或者3周记录和总结一下.&lt;/p&gt;
+&lt;p&gt;ps. 目前格式就按照事情来排列然后加以描述&lt;br&gt;
+    
+    </summary>
+    
+      <category term="周报" scheme="http://misakatang.cn/%E5%88%86%E7%B1%BB/%E5%91%A8%E6%8A%A5/"/>
+    
+    
+      <category term="v2ray" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/v2ray/"/>
+    
+      <category term="JetBrains" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/JetBrains/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>用Jenkins pipeline(流水线)实现SpringBoot Application的docker构建和持续集成(CI)</title>
+    <link href="http://misakatang.cn/2019/10/11/jenkins-docker-deploy-spring-app/"/>
+    <id>http://misakatang.cn/2019/10/11/jenkins-docker-deploy-spring-app/</id>
+    <published>2019-10-11T10:27:32.000Z</published>
+    <updated>2020-09-12T05:04:59.741Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;写在前面&quot;&gt;&lt;a href=&quot;#写在前面&quot; class=&quot;headerlink&quot; title=&quot;写在前面&quot;&gt;&lt;/a&gt;写在前面&lt;/h1&gt;&lt;p&gt;在看了许多CI的内容之后,正好碰上公司尝试把应用容器化以及进行持续集成(之前还是需要手动执行启停脚本),然后我便成了第一个吃螃蟹的人,在一阵折腾之后也勉强算是把整个流程给走通了便在这里记录一下大致的流程和踩到的坑,也是对最近许久不更新的博客增加一些新东西吧.&lt;/p&gt;
+&lt;h1 id=&quot;部署流程&quot;&gt;&lt;a href=&quot;#部署流程&quot; class=&quot;headerlink&quot; title=&quot;部署流程&quot;&gt;&lt;/a&gt;部署流程&lt;/h1&gt;&lt;p&gt;首先描述一下整个部署的流程来理清一下整个逻辑，这里仅仅是给出我自己的暂时的解决方案，由于业务和环境的不同必定没有完全一样的流程，并且这也只是暂时的方案还是有很多可以优化的地方。&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;更新代码 ==&amp;gt; 触发Jenkins流水线的构建 ==&amp;gt; Maven打包项目 ==&amp;gt; 制作docker image ==&amp;gt; &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;上传image(这里使用阿里的镜像服务) ==&amp;gt; 远程服务器执行部署脚本 ==&amp;gt; 判断部署状态(nacos api)&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;需要注意的是：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;项目的仓库中包含了Jenkinsfile和部署的脚本(全部交由版本控制)&lt;/li&gt;
+&lt;li&gt;由于线上服务器为阿里ECS并且外网无法访问，所以使用了部署服务器(外网IP)来做跳转和部署&lt;/li&gt;
+&lt;li&gt;因为项目使用了SpringCloud的微服务框架并且使用了NACOS注册中心，所以在服务的优雅下线重启阶段使用了nacos的服务调度API并没有使用SpringCloud自带的端点，当然本质都是通过接口调用告知注册中心下线服务&lt;/li&gt;
+&lt;li&gt;由于线上服务器均没有使用root用户来发布应用所以在这里踩了小坑，暂时的解决方案可能并不完美
+    
+    </summary>
+    
+      <category term="技术教程" scheme="http://misakatang.cn/%E5%88%86%E7%B1%BB/%E6%8A%80%E6%9C%AF%E6%95%99%E7%A8%8B/"/>
+    
+    
+      <category term="Jenkins" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/Jenkins/"/>
+    
+      <category term="docker" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/docker/"/>
+    
+      <category term="CI" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/CI/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Java8函数式编程笔记</title>
+    <link href="http://misakatang.cn/2019/10/10/java8-lambda-note/"/>
+    <id>http://misakatang.cn/2019/10/10/java8-lambda-note/</id>
+    <published>2019-10-10T10:28:37.000Z</published>
+    <updated>2020-09-12T05:04:59.741Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;chp2&quot;&gt;&lt;a href=&quot;#chp2&quot; class=&quot;headerlink&quot; title=&quot;chp2.&quot;&gt;&lt;/a&gt;chp2.&lt;/h1&gt;&lt;h2 id=&quot;lambda表达式的几种形式&quot;&gt;&lt;a href=&quot;#lambda表达式的几种形式&quot; class=&quot;headerlink&quot; title=&quot;lambda表达式的几种形式&quot;&gt;&lt;/a&gt;lambda表达式的几种形式&lt;/h2&gt;&lt;figure class=&quot;highlight java&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// () -&amp;gt; 表示没有参数且Runnable接口只有一个run方法&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Runnable noArguments = () -&amp;gt; System.out.println(&lt;span class=&quot;string&quot;&gt;&quot;Hello World&quot;&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// 只有一个参数的表达式可以省略括号&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;ActionListener oneArgument = event -&amp;gt; System.out.println(&lt;span class=&quot;string&quot;&gt;&quot;button clicked&quot;&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// 表达式可以为代码块，用&amp;#123;&amp;#125;括起来&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Runnable multiStatement = () -&amp;gt; &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  System.out.print(&lt;span class=&quot;string&quot;&gt;&quot;Hello&quot;&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  System.out.println(&lt;span class=&quot;string&quot;&gt;&quot; World&quot;&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// 包含多个参数，返回的add变量是代码 BinaryOperator而不是相加之后的结果（有点类似于将函数作为变量）&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;BinaryOperator&amp;lt;Long&amp;gt; add = (x, y) -&amp;gt; x + y;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// 括号内的参数也可以指定类型而不是让编译器来推断&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;BinaryOperator&amp;lt;Long&amp;gt; addExplicit = (Long x, Long y) -&amp;gt; x + y;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;Lambda 表达式的类型依赖于上下文环境，是由编译器推断出来的。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="笔记" scheme="http://misakatang.cn/%E5%88%86%E7%B1%BB/%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="lambda" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/lambda/"/>
+    
+      <category term="Java8" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/Java8/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>这周搞的一些新东西</title>
+    <link href="http://misakatang.cn/2019/09/08/what-new-things-this-week/"/>
+    <id>http://misakatang.cn/2019/09/08/what-new-things-this-week/</id>
+    <published>2019-09-08T12:03:52.000Z</published>
+    <updated>2020-09-12T05:04:59.741Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;话到嘴边又不知道该怎么描述,也算是拾起了很久没用的博客吧,这也算是自己少见的文字输出方式了所以还是来写一写.&lt;/p&gt;
+&lt;p&gt;之所以会写&lt;strong&gt;这周搞的一些新东西&lt;/strong&gt;这样的博客,主要是这周摸🐟的时光似乎有些多了,也是四处搞了很多新东西和一些之前遗留的事,就来记录一下吧.&lt;/p&gt;
+&lt;h1 id=&quot;敏捷学习仓库合并&quot;&gt;&lt;a href=&quot;#敏捷学习仓库合并&quot; class=&quot;headerlink&quot; title=&quot;敏捷学习仓库合并&quot;&gt;&lt;/a&gt;敏捷学习仓库合并&lt;/h1&gt;&lt;p&gt;在许久之前看了&lt;a href=&quot;http://insights.thoughtworkers.org/agile-learning-method-base-on-github/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;基于GitHub的敏捷学习方法之道与术&lt;/a&gt;之后就深受影响然后搞了一个仓库&lt;a href=&quot;https://github.com/TangMisaka23001/Agile-Learning&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Agile-Learning&lt;/a&gt;也坚持搞了一段时间(MySQL文档翻译就是这样促成的),但是过年回来之后惰性发作也就许久没有再去动这个仓库也就闲置了许久,最近打算重新使用之后发现private的仓库不能无偿使用wiki,也就借着public的机会把这个仓库和github.io的仓库给合并了顺便整理了一下吧.&lt;/p&gt;
+&lt;p&gt;因为写博客的分支是在backup上的,所以对博客访问也没有什么影响,也是方便自己管理,之前没有public敏捷学习的仓库也是因为打算实践一段时间找到自己的使用方式之后再public出来,现在也是想用wiki就用public的方式来督促一下自己吧算是.&lt;br&gt;
+    
+    </summary>
+    
+      <category term="周报" scheme="http://misakatang.cn/%E5%88%86%E7%B1%BB/%E5%91%A8%E6%8A%A5/"/>
+    
+    
+      <category term="windows" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/windows/"/>
+    
+      <category term="agile-learning" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/agile-learning/"/>
+    
+      <category term="blog" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/blog/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>阅读:Test-Driven Development By Example</title>
+    <link href="http://misakatang.cn/2019/09/03/read-Test-Driven-Development-By-Example/"/>
+    <id>http://misakatang.cn/2019/09/03/read-Test-Driven-Development-By-Example/</id>
+    <published>2019-09-03T17:00:13.000Z</published>
+    <updated>2020-09-12T05:04:59.741Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;Perface&quot;&gt;&lt;a href=&quot;#Perface&quot; class=&quot;headerlink&quot; title=&quot;Perface&quot;&gt;&lt;/a&gt;Perface&lt;/h1&gt;&lt;p&gt;&lt;strong&gt;TDD rules:&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;write new code only if you first have a failing automated test.&lt;/li&gt;
+&lt;li&gt;eliminate duplication. 消除重复设计&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;Technical implications:&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;design organically: running code providing feedback between decisions.&lt;/li&gt;
+&lt;li&gt;write your own test.&lt;/li&gt;
+&lt;li&gt;development env must provide rapid response to small change.&lt;/li&gt;
+&lt;li&gt;design must be &lt;em&gt;highly cohesive, loosely coupled components(高内聚,低耦合)&lt;/em&gt; to make &lt;strong&gt;testing easy&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;Programing order:&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Red-write a little that doesn’t work.&lt;/li&gt;
+&lt;li&gt;Green-make the test work quickly.&lt;/li&gt;
+&lt;li&gt;Refactor-eliminate all the duplication created.&lt;/li&gt;
+&lt;/ol&gt;
+    
+    </summary>
+    
+      <category term="笔记" scheme="http://misakatang.cn/%E5%88%86%E7%B1%BB/%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="TDD" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/TDD/"/>
+    
+      <category term="看书" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/%E7%9C%8B%E4%B9%A6/"/>
+    
+      <category term="Test" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/Test/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>InnoDB官方文档--14.7.4 幻影行|14.7.5 InnoDB的死锁</title>
+    <link href="http://misakatang.cn/2019/09/02/InnoDB%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3-14-7-4-%E5%B9%BB%E5%BD%B1%E8%A1%8C-14-7-5-InnoDB%E7%9A%84%E6%AD%BB%E9%94%81/"/>
+    <id>http://misakatang.cn/2019/09/02/InnoDB官方文档-14-7-4-幻影行-14-7-5-InnoDB的死锁/</id>
+    <published>2019-09-02T14:45:22.000Z</published>
+    <updated>2020-09-12T05:04:59.741Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h4 id=&quot;14-7-4-幻影行&quot;&gt;&lt;a href=&quot;#14-7-4-幻影行&quot; class=&quot;headerlink&quot; title=&quot;14.7.4 幻影行&quot;&gt;&lt;/a&gt;14.7.4 幻影行&lt;/h4&gt;&lt;p&gt;所谓的幻读就是同一个事务在不同的时间执行相同的查询产生不同的结果行.例如,如果一个SELECT执行2次,但是第二次返回的行和第一次的不一样,这些行就被称为”幻影行”.&lt;/p&gt;
+&lt;p&gt;假设在child表的id列上有索引并且你想要对表中id值大于100的所有行进行加锁和读取,为了在之后更新选中列中的数据:&lt;br&gt;&lt;figure class=&quot;highlight sql&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;SELECT&lt;/span&gt; * &lt;span class=&quot;keyword&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;child&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;WHERE&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;id&lt;/span&gt; &amp;gt; &lt;span class=&quot;number&quot;&gt;100&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;FOR&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;UPDATE&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;查询从id大于100的第一个记录开始扫描.假设表包含90和102.如果扫描范围之内的索引记录没有对插入的间隙加锁,另一个会话可以插入一个id为101的新行到表中.如果你在相同的事务中执行相同的SELECT,你将会在查询结果中看到一个id为101的新行(一个”幻影”).如果我们把这一系列的行视为一个数据项的话,新的幻影数据将违反事务的隔离准则即:在事务期间读取的数据不会发生改变.&lt;/p&gt;
+&lt;p&gt;为了避免幻读,InnoDB使用了一个叫做next-key锁的算法,它将索引行锁定与间隙锁定相结合.InnoDB以这样的方式执行行级锁定:当它搜索或扫描表索引时,它会在遇到的索引记录上设置共享锁或独占锁.因此,行级锁其实是索引记录锁.此外,索引记录上的next-key锁也会影响索引记录前的间隙.也就是说,next-key锁是索引记录锁加上索引记录锁前间隙锁.如果一个会话在索引记录R上有一个共享或者独占锁,其他会话就不能在索引记录R之前的间隙插入一个新的索引记录了.&lt;/p&gt;
+&lt;p&gt;当InnoDB扫描索引时,也会对最后一个索引记录后的间隙加锁.在前面的例子中就发生了这种情况:为了避免任何比100大的id插入到表中,InnoDB设置的锁也包括了id为102之后的间隙锁.&lt;/p&gt;
+&lt;p&gt;你可以使用next-key锁在你的应用中实现唯一性检查:如果你在共享模式下读取你的数据并且你要插入的行中没有重复键,那你就可以安全的插入行数据并且知道在你读取期间设置的next-key锁会组织任何人在同时插入和你重复键的行数据.因此,next-key锁能够使你锁定某些表中不存在的数据.&lt;br&gt;
+    
+    </summary>
+    
+      <category term="文档翻译" scheme="http://misakatang.cn/%E5%88%86%E7%B1%BB/%E6%96%87%E6%A1%A3%E7%BF%BB%E8%AF%91/"/>
+    
+    
+      <category term="MySQL" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/MySQL/"/>
+    
+      <category term="InnoDB" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/InnoDB/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>InnoDB官方文档--14.7.2 InnoDB事务模型|14.7.3 InnoDB中的不同SQL语句设置的锁</title>
+    <link href="http://misakatang.cn/2019/09/02/InnoDB%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3-14-7-2-InnoDB%E4%BA%8B%E5%8A%A1%E6%A8%A1%E5%9E%8B-14-7-3-InnoDB%E4%B8%AD%E7%9A%84%E4%B8%8D%E5%90%8CSQL%E8%AF%AD%E5%8F%A5%E8%AE%BE%E7%BD%AE%E7%9A%84%E9%94%81/"/>
+    <id>http://misakatang.cn/2019/09/02/InnoDB官方文档-14-7-2-InnoDB事务模型-14-7-3-InnoDB中的不同SQL语句设置的锁/</id>
+    <published>2019-09-02T12:01:22.000Z</published>
+    <updated>2020-09-12T05:04:59.741Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h4 id=&quot;14-7-2-InnoDB事务模型&quot;&gt;&lt;a href=&quot;#14-7-2-InnoDB事务模型&quot; class=&quot;headerlink&quot; title=&quot;14.7.2 InnoDB事务模型&quot;&gt;&lt;/a&gt;14.7.2 InnoDB事务模型&lt;/h4&gt;&lt;p&gt;在InnoDB事务模型里,其目标就是把多版本数据库的最佳属性和传统的两段锁相结合.InnoDB在行级进行加锁并且默认情况下将查询作为非锁定的一致性读取来运行,这是Oracle的风格.InnoDB中的锁信息是高效存储的所以不需要升级.通常允许多个用户锁定InnoDB表中的每一行,或行的任何随机子集而不会导致InnoDB内存耗尽.&lt;/p&gt;
+&lt;h5 id=&quot;14-7-2-1-事务隔离级别&quot;&gt;&lt;a href=&quot;#14-7-2-1-事务隔离级别&quot; class=&quot;headerlink&quot; title=&quot;14.7.2.1 事务隔离级别&quot;&gt;&lt;/a&gt;14.7.2.1 事务隔离级别&lt;/h5&gt;&lt;p&gt;事务隔离是数据库处理的基础之一.隔离(Isolation)是ACID中I的缩写;隔离级别是在多个事务同时进行更改和执行查询时对性能和可靠性,一致性和结果的可重复性进行平衡的细微调整的设置.&lt;/p&gt;
+&lt;p&gt;InnoDB提供SQL:1992标准描述的四种事务隔离级别:&lt;code&gt;READ UNCOMMITTED&lt;/code&gt;,&lt;code&gt;READ COMMITTED&lt;/code&gt;,&lt;code&gt;REPEATABLE READ&lt;/code&gt;和&lt;code&gt;SERIALIZABLE&lt;/code&gt;.InnoDB默认的事务隔离级别是&lt;code&gt;REPEATABLE READ&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;用户可以改变单个会话(session)的隔离级别或使用&lt;code&gt;SET TRANSACTION&lt;/code&gt;语句为连接后面所有的语句设置.为了对所有的连接设置服务器默认的隔离级别,在命令行使用&lt;code&gt;--transaction-isolation&lt;/code&gt;选项或在配置文件中.&lt;/p&gt;
+&lt;p&gt;InnoDB支持对每个事务隔离级别使用不同的锁策略.你可以对符合ACID规范很重要的关键数据的操作使用默认的&lt;code&gt;REPEATABLE READ&lt;/code&gt;级别来强制执行高一致性.或者你可以使用&lt;code&gt;READ COMMITTED&lt;/code&gt;或&lt;code&gt;READ UNCOMMITTED&lt;/code&gt;放松一致性要求,在例如批量报告等情况下,精确的一致性和可重复结果不如最小化锁的开销那么重要.&lt;code&gt;SERIALIZABLE&lt;/code&gt;比&lt;code&gt;REPEATABLE READ&lt;/code&gt;更严格,且主要用于特殊情况,例如XA事务以及并发和死锁的故障问题排除上.&lt;br&gt;
+    
+    </summary>
+    
+      <category term="文档翻译" scheme="http://misakatang.cn/%E5%88%86%E7%B1%BB/%E6%96%87%E6%A1%A3%E7%BF%BB%E8%AF%91/"/>
+    
+    
+      <category term="MySQL" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/MySQL/"/>
+    
+      <category term="InnoDB" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/InnoDB/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>InnoDB官方文档--14.7 InnoDB锁和事务模型|14.7.1 InnoDB锁</title>
+    <link href="http://misakatang.cn/2019/03/30/InnoDB%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3-14-7-InnoDB%E9%94%81%E5%92%8C%E4%BA%8B%E5%8A%A1%E6%A8%A1%E5%9E%8B-14-7-1-InnoDB%E9%94%81/"/>
+    <id>http://misakatang.cn/2019/03/30/InnoDB官方文档-14-7-InnoDB锁和事务模型-14-7-1-InnoDB锁/</id>
+    <published>2019-03-30T15:33:05.000Z</published>
+    <updated>2020-09-12T05:04:59.741Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;14-7-InnoDB锁和事务模型&quot;&gt;&lt;a href=&quot;#14-7-InnoDB锁和事务模型&quot; class=&quot;headerlink&quot; title=&quot;14.7 InnoDB锁和事务模型&quot;&gt;&lt;/a&gt;14.7 InnoDB锁和事务模型&lt;/h3&gt;&lt;p&gt;为了实现大规模,繁忙或高可靠的数据库应用,从不同的数据库系统移植大量代码或调整MySQL性能,理解InnoDB锁和InnoDB事务模型是很重要的.&lt;/p&gt;
+&lt;p&gt;这个部分讨论了几个你应该要熟悉的和InnoDB锁和InnoDB事务模型相关的主题.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;14.7.1 InnoDB锁 描述了InnoDB中使用的锁类型.&lt;/li&gt;
+&lt;li&gt;14.7.2 InnoDB事务模型 描述了事务隔离级别和每个锁的使用策略.同时也讨论了autocommit的使用,一致的无锁读和锁定读取.&lt;/li&gt;
+&lt;li&gt;14.7.3 InnoDB中不同SQL语句设置的锁 讨论了InnoDB中为各种语句设置的特定锁类型.&lt;/li&gt;
+&lt;li&gt;14.7.4 幻想行 描述InnoDB如何使用下一个键锁定来避免幻像行&lt;/li&gt;
+&lt;li&gt;14.7.5 InnoDB中的死锁 提供了一个死锁示例,讨论了死锁检测和回滚,并提供了在InnoDB中最小化和处理死锁的技巧.
+    
+    </summary>
+    
+      <category term="文档翻译" scheme="http://misakatang.cn/%E5%88%86%E7%B1%BB/%E6%96%87%E6%A1%A3%E7%BF%BB%E8%AF%91/"/>
+    
+    
+      <category term="MySQL" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/MySQL/"/>
+    
+      <category term="InnoDB" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/InnoDB/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>InnoDB官方文档--14.6.6 Redo日志|14.6.7 undo日志</title>
+    <link href="http://misakatang.cn/2019/03/30/InnoDB%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3-14-6-6-Redo%E6%97%A5%E5%BF%97-14-6-7-undo%E6%97%A5%E5%BF%97/"/>
+    <id>http://misakatang.cn/2019/03/30/InnoDB官方文档-14-6-6-Redo日志-14-6-7-undo日志/</id>
+    <published>2019-03-30T15:24:30.000Z</published>
+    <updated>2020-09-12T05:04:59.741Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h4 id=&quot;14-6-6-Redo日志&quot;&gt;&lt;a href=&quot;#14-6-6-Redo日志&quot; class=&quot;headerlink&quot; title=&quot;14.6.6 Redo日志&quot;&gt;&lt;/a&gt;14.6.6 Redo日志&lt;/h4&gt;&lt;p&gt;redo 日志是一个基于磁盘的数据结构,在崩溃恢复期间用于纠正由不完整事务写入的数据.在正常操作期间,redo日志对更改由SQL语句或低级API调用产生的表数据的请求进行编码.未完成更新数据文件的修改会在以外关闭自动重启的初始化期间和连接接受之前完成.&lt;/p&gt;
+&lt;p&gt;默认情况下,redo日志在磁盘上由两个名为ib_logfile0和ib_logfile1的文件表示.MySQL以循环方式写入redo日志文件.redo日志中的数据根据​​受影响的记录进行编码;这些数据统称为redo.通过redo日志的数据传递由不断增加的LSN值表示.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;改变InnoDB redo日志文件的数量或大小&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;为了改变InnoDB redo日志文件的大小或数量,执行下面的步骤:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;停止MySQL服务并且保证关闭时没有错误.&lt;/li&gt;
+&lt;li&gt;编辑my.cnf改变日志文件配置.修改&lt;code&gt;innodb_log_file_size&lt;/code&gt;来改变日志文件的大小,修改&lt;code&gt;innodb_log_files_in_group&lt;/code&gt;来增加日志文件的数量.&lt;/li&gt;
+&lt;li&gt;再次启动MySQL服务.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;InnoDB如果检测到redo日志文件大小和&lt;code&gt;innodb_log_file_size&lt;/code&gt;不一样,会写下日志检查点,关闭和删除旧的日志文件,按照需要的大小创建新的日志文件并且打开新的日志文件(使用).&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;redo日志刷新的分组提交(Group Commit for Redo Log Flushing)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;InnoDB和其他任何符合ACID标准的数据库引擎一样,在提交事务之前刷新事务的redo日志.InnoDB使用组提交功能将多个刷新请求组合在一起来避免每次只提交一个刷新.通过组提交,InnoDB会对日志文件发出一次写入操作来为同时提交的多个用户事务执行提交操作,从而显着提高吞吐量.&lt;br&gt;
+    
+    </summary>
+    
+      <category term="文档翻译" scheme="http://misakatang.cn/%E5%88%86%E7%B1%BB/%E6%96%87%E6%A1%A3%E7%BF%BB%E8%AF%91/"/>
+    
+    
+      <category term="MySQL" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/MySQL/"/>
+    
+      <category term="InnoDB" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/InnoDB/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>InnoDB官方文档--14.6.4 InnoDB数据字典|14.6.5 双写缓冲区</title>
+    <link href="http://misakatang.cn/2019/03/30/InnoDB%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3-14-6-4-InnoDB%E6%95%B0%E6%8D%AE%E5%AD%97%E5%85%B8-14-6-5-%E5%8F%8C%E5%86%99%E7%BC%93%E5%86%B2%E5%8C%BA/"/>
+    <id>http://misakatang.cn/2019/03/30/InnoDB官方文档-14-6-4-InnoDB数据字典-14-6-5-双写缓冲区/</id>
+    <published>2019-03-30T15:23:30.000Z</published>
+    <updated>2020-09-12T05:04:59.741Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h4 id=&quot;14-6-4-InnoDB数据字典-InnoDB-Data-Dictionary&quot;&gt;&lt;a href=&quot;#14-6-4-InnoDB数据字典-InnoDB-Data-Dictionary&quot; class=&quot;headerlink&quot; title=&quot;14.6.4 InnoDB数据字典(InnoDB Data Dictionary)&quot;&gt;&lt;/a&gt;14.6.4 InnoDB数据字典(InnoDB Data Dictionary)&lt;/h4&gt;&lt;p&gt;InnoDB数据字典由内部系统表构成,包含用于跟踪对象如表,索引和表的列的元数据.元数据实际位于InnoDB系统表空间内.由于历史原因,数据字典元数据在某种程度上与InnoDB表元数据文件(.frm文件)中存储的信息重叠.&lt;br&gt;
+    
+    </summary>
+    
+      <category term="文档翻译" scheme="http://misakatang.cn/%E5%88%86%E7%B1%BB/%E6%96%87%E6%A1%A3%E7%BF%BB%E8%AF%91/"/>
+    
+    
+      <category term="MySQL" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/MySQL/"/>
+    
+      <category term="InnoDB" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/InnoDB/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>InnoDB官方文档--14.6.3 表空间(Tablespaces)</title>
+    <link href="http://misakatang.cn/2019/03/25/InnoDB%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3-14-6-3-%E8%A1%A8%E7%A9%BA%E9%97%B4/"/>
+    <id>http://misakatang.cn/2019/03/25/InnoDB官方文档-14-6-3-表空间/</id>
+    <published>2019-03-25T22:04:07.000Z</published>
+    <updated>2020-09-12T05:04:59.741Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h4 id=&quot;14-6-3-表空间-Tablespaces&quot;&gt;&lt;a href=&quot;#14-6-3-表空间-Tablespaces&quot; class=&quot;headerlink&quot; title=&quot;14.6.3 表空间(Tablespaces)&quot;&gt;&lt;/a&gt;14.6.3 表空间(Tablespaces)&lt;/h4&gt;&lt;h5 id=&quot;14-6-3-1-系统表空间-The-System-Tablespace&quot;&gt;&lt;a href=&quot;#14-6-3-1-系统表空间-The-System-Tablespace&quot; class=&quot;headerlink&quot; title=&quot;14.6.3.1 系统表空间(The System Tablespace)&quot;&gt;&lt;/a&gt;14.6.3.1 系统表空间(The System Tablespace)&lt;/h5&gt;&lt;p&gt;InnoDB系统表空间包含了InnoDB数据文件(InnoDB相关的对象元数据)并且存储区域是双写缓存,变更缓存和undo日志的存储区域.系统表空间也包含了用户创建在系统表空间中的表和索引数据.&lt;/p&gt;
+&lt;p&gt;系统表空间有一到多个数据文件.默认情况下名为 ibdata1的系统表空间数据文件被创建在数据目录下.系统表空间的大小和数量由innodb_data_file_path启动选项控制.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;调整系统表空间(Resizing the System Tablespace)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;增加InnoDB系统表空间的大小&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;增加InnoDB系统表空间大小的最简单方法是从一开始就将其配置为自动扩展.在表空间定义中指定最后一个数据文件为&lt;code&gt;autoextend&lt;/code&gt;属性.然后InnoDB在空间不足时以64MB为增量自动增加该文件的大小.可以通过设置innodb_autoextend_increment系统变量的值来更改增量大小,以MB为单位.&lt;/p&gt;
+&lt;p&gt;你可以添加另一个数据文件指定数量来扩展系统表空间:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;关闭MySQL服务器.&lt;/li&gt;
+&lt;li&gt;如果之前的最后一个数据文件定义了关键字&lt;code&gt;autoextend&lt;/code&gt;,根据基于实际增长的大小改变其定义为固定的大小.检查数据文件的大小,将其向下舍入为最接近的1024×1024字节的倍数(1MB),然后在&lt;code&gt;innodb_data_file_path&lt;/code&gt;指定这个大小.&lt;/li&gt;
+&lt;li&gt;在&lt;code&gt;innodb_data_file_path&lt;/code&gt;配置后添加一个新的数据文件,配置其自动扩展.只有&lt;code&gt;innodb_data_file_path&lt;/code&gt;中的最后一个文件可以被指定为自动扩展.&lt;/li&gt;
+&lt;li&gt;启动MySQL服务器.
+    
+    </summary>
+    
+      <category term="文档翻译" scheme="http://misakatang.cn/%E5%88%86%E7%B1%BB/%E6%96%87%E6%A1%A3%E7%BF%BB%E8%AF%91/"/>
+    
+    
+      <category term="MySQL" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/MySQL/"/>
+    
+      <category term="InnoDB" scheme="http://misakatang.cn/%E6%A0%87%E7%AD%BE/InnoDB/"/>
+    
+  </entry>
+  
+</feed>

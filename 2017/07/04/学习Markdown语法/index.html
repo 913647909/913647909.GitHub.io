@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+  <link rel="alternate" href="/atom.xml" title="MisakaTang's Blog" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2">
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="刚刚进入暑假，就尝试在GithubPages上搭建了自己的博客，在暑假的自学期间尝试把自己的学习体会记录下来。所以就不可避免的要学习一下Markdown来写博客，在写建站记录之前先把学习Markdown的东西先记录一下。 Markdown简介Markdown是一种极简的语言，用来写博客再合适不过，这里也只是学习了一下最基本的语法和功能，在以后若是还有其他的东西再做补充。 语法标题标题便是最先遇到的">
+<meta name="keywords" content="Markdown">
+<meta property="og:type" content="article">
+<meta property="og:title" content="学习Markdown语法">
+<meta property="og:url" content="http://misakatang.cn/2017/07/04/学习Markdown语法/index.html">
+<meta property="og:site_name" content="MisakaTang&#39;s Blog">
+<meta property="og:description" content="刚刚进入暑假，就尝试在GithubPages上搭建了自己的博客，在暑假的自学期间尝试把自己的学习体会记录下来。所以就不可避免的要学习一下Markdown来写博客，在写建站记录之前先把学习Markdown的东西先记录一下。 Markdown简介Markdown是一种极简的语言，用来写博客再合适不过，这里也只是学习了一下最基本的语法和功能，在以后若是还有其他的东西再做补充。 语法标题标题便是最先遇到的">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-09-12T05:04:59.745Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="学习Markdown语法">
+<meta name="twitter:description" content="刚刚进入暑假，就尝试在GithubPages上搭建了自己的博客，在暑假的自学期间尝试把自己的学习体会记录下来。所以就不可避免的要学习一下Markdown来写博客，在写建站记录之前先把学习Markdown的东西先记录一下。 Markdown简介Markdown是一种极简的语言，用来写博客再合适不过，这里也只是学习了一下最基本的语法和功能，在以后若是还有其他的东西再做补充。 语法标题标题便是最先遇到的">
+  <link rel="canonical" href="http://misakatang.cn/2017/07/04/学习Markdown语法/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>学习Markdown语法 | MisakaTang's Blog</title>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-147618435-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-147618435-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">MisakaTang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-wiki">
+      
+    
+
+    <a href="/wiki/" rel="section"><i class="menu-item-icon fa fa-fw fa-book"></i> <br>WiKi</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/TangMisaka23001" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://misakatang.cn/2017/07/04/学习Markdown语法/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="MisakaTang">
+      <meta itemprop="description" content="The limits of my language are the limits of my world">
+      <meta itemprop="image" content="/images/misaka.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MisakaTang's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">学习Markdown语法
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2017-07-04 13:54:38" itemprop="dateCreated datePublished" datetime="2017-07-04T13:54:38+00:00">2017-07-04</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-12 05:04:59" itemprop="dateModified" datetime="2020-09-12T05:04:59+00:00">2020-09-12</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/分类/笔记/" itemprop="url" rel="index"><span itemprop="name">笔记</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span id="/2017/07/04/学习Markdown语法/" class="post-meta-item leancloud_visitors" data-flag-title="学习Markdown语法" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>刚刚进入暑假，就尝试在GithubPages上搭建了自己的博客，在暑假的自学期间尝试把自己的学习体会记录下来。所以就不可避免的要学习一下Markdown来写博客，在写建站记录之前先把学习Markdown的东西先记录一下。</p>
+<h1 id="Markdown简介"><a href="#Markdown简介" class="headerlink" title="Markdown简介"></a><a href="#Markdown简介" title="Markdown简介"></a>Markdown简介</h1><p>Markdown是一种极简的语言，用来写博客再合适不过，这里也只是学习了一下最基本的语法和功能，在以后若是还有其他的东西再做补充。</p>
+<h1 id="语法"><a href="#语法" class="headerlink" title="语法"></a><a href="#语法" title="语法"></a>语法</h1><h2 id="标题"><a href="#标题" class="headerlink" title="标题"></a><a href="#标题" title="标题"></a>标题</h2><p>标题便是最先遇到的语法了，非常的简单，只要在标题前面加上#就可以了，二级标题三级标题只要往下继续增加#便可。<br>例如：</p>
+<pre><code># 一级标题
+## 二级标题
+### 三级标题
+</code></pre><p><strong>注：</strong> 在Markdown书写时要注意标签和文字之间要添加空格！！这点非常重要。</p>
+<hr>
+<a id="more"></a>
+<h2 id="列表"><a href="#列表" class="headerlink" title="列表"></a><a href="#列表" title="列表"></a>列表</h2><p>列表的使用只需要在文字之前加上- 或者<strong>数字+.</strong> 就可以 前者为无序列表而后者为有序列表。如：</p>
+<pre><code>有序列表：
+1. 列表1
+2. 列表2  
+
+无序列表：
+- 文字1
+- 文字2  
+</code></pre><h2 id="强调"><a href="#强调" class="headerlink" title="强调"></a><a href="#强调" title="强调"></a>强调</h2><p>在Markdown中的强调使用，需要使用星号或者下划线来将文字包围，<em>一颗星号的效果</em> <strong>两颗星号的效果</strong> <em>一条下环线的效果</em> <strong>两条下划线的效果</strong> 所以*与_起到的效果是一样的，一个为下环线而两个为加粗。</p>
+<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a><a href="#引用" title="引用"></a>引用</h2><p>引用只需要在需要引用的文字前加上&gt;即可</p>
+<blockquote>
+<p>现在是被引用的文字</p>
+</blockquote>
+<h2 id="链接和图片"><a href="#链接和图片" class="headerlink" title="链接和图片"></a><a href="#链接和图片" title="链接和图片"></a>链接和图片</h2><p>链接和图片的使用方式相类似，因为图片就是一种链接形式嘛。<br>链接的语法是<code>[文字](括号里面写链接)</code><br>图片的语法是<code>![](图片的链接)</code></p>
+<h2 id="代码的引用"><a href="#代码的引用" class="headerlink" title="代码的引用"></a><a href="#代码的引用" title="代码的引用"></a>代码的引用</h2><p>代码的引用只需要在要引用的代码前后加上<code>就可以，如果是多行的代码引用则需在引用的代码前后加上三个</code>,在开头可以指定代码的语言类型。如：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;    </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"hello,world"</span>);    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>用这种方式就可以在文本中添加代码了，而且还是有高亮的（如果不指定语言的话是不会有高亮的）。<br>或者是在代码前加上一个tab或者4个空格，这样也可以来引用。</p>
+<pre><code>#include&lt;stdio.h&gt;
+    int main(){
+        printf(&quot;hello,world&quot;);
+        return 0;
+    }
+</code></pre><h2 id="注释"><a href="#注释" class="headerlink" title="注释"></a><a href="#注释" title="注释"></a>注释</h2><p>注释使用html的注释方式&lt;!— —&gt;<br>(在!号前加了转义符号强行显示注释)</p>
+<h2 id="转义符号"><a href="#转义符号" class="headerlink" title="转义符号"></a><a href="#转义符号" title="转义符号"></a>转义符号</h2><p>转义符号和其他的语言没有太大的差别，转义符为\。<br>\\ 反斜杠<br>\` 反引号<br>\* 星号<br>\_ 下划线<br>\{\} 大括号<br>\[] 中括号<br>\() 小括号<br>\# 井号<br>\+ 加号<br>\- 减号<br>\. 英文句号<br>\! 感叹号</p>
+<h2 id="回车"><a href="#回车" class="headerlink" title="回车"></a><a href="#回车" title="回车"></a>回车</h2><p>这里把回车拿出来讲一下是因为在写这篇文档的时候就遇到了这个问题，在Markdown里如果需要手动换行的话是需要在文末加上<strong>两个空格</strong>的！！</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a><a href="#总结" title="总结"></a>总结</h1><p>关于Markdown的语法学习还是很快的，其他的遇到的问题之后有的话也会继续补充，这也算是用Markdown写的第一篇博客了，这种方式来学习新的知识确实很不错，希望自己可以坚持下去吧。</p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a><a href="#参考文章" title="参考文章"></a>参考文章</h1><p><a href="http://ibruce.info/2013/11/26/markdown/" target="_blank" rel="noopener">markdown简明语法</a><br><a href="http://www.jianshu.com/p/q81RER" target="_blank" rel="noopener">献给写作者的 Markdown 新手指南</a></p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/标签/Markdown/" rel="tag"># Markdown</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2017/07/04/使用Hexo以及GithubPage搭建个人博客历程/" rel="next" title="使用Hexo以及GithubPage搭建个人博客历程">
+                  <i class="fa fa-chevron-left"></i> 使用Hexo以及GithubPage搭建个人博客历程
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2017/07/08/OpenCV学习笔记-Java实现-二/" rel="prev" title="OpenCV学习笔记--Java实现(二)">
+                  OpenCV学习笔记--Java实现(二) <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Markdown简介"><span class="nav-number">1.</span> <span class="nav-text">Markdown简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#语法"><span class="nav-number">2.</span> <span class="nav-text">语法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#标题"><span class="nav-number">2.1.</span> <span class="nav-text">标题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#列表"><span class="nav-number">2.2.</span> <span class="nav-text">列表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#强调"><span class="nav-number">2.3.</span> <span class="nav-text">强调</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#引用"><span class="nav-number">2.4.</span> <span class="nav-text">引用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#链接和图片"><span class="nav-number">2.5.</span> <span class="nav-text">链接和图片</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码的引用"><span class="nav-number">2.6.</span> <span class="nav-text">代码的引用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注释"><span class="nav-number">2.7.</span> <span class="nav-text">注释</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#转义符号"><span class="nav-number">2.8.</span> <span class="nav-text">转义符号</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#回车"><span class="nav-number">2.9.</span> <span class="nav-text">回车</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文章"><span class="nav-number">4.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" src="/images/misaka.jpg" alt="MisakaTang">
+  <p class="site-author-name" itemprop="name">MisakaTang</p>
+  <div class="site-description" itemprop="description">The limits of my language are the limits of my world</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/归档">
+        
+          <span class="site-state-item-count">77</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">65</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/TangMisaka23001" title="GitHub &rarr; https://github.com/TangMisaka23001" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:mikasatang@gmail.com" title="E-Mail &rarr; mailto:mikasatang@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://www.douban.com/people/misakatang/" title="豆瓣主页 &rarr; https://www.douban.com/people/misakatang/" rel="noopener" target="_blank"><i class="fa fa-fw fa-globe"></i>豆瓣主页</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://xiaoshidefeng.github.io/" title="https://xiaoshidefeng.github.io/" rel="noopener" target="_blank">ChenWei的博客</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://blog.bbchen.top/" title="http://blog.bbchen.top/" rel="noopener" target="_blank">BB chen的漂流记</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://blog.zhuzhenyuan.cn/" title="http://blog.zhuzhenyuan.cn/" rel="noopener" target="_blank">Aurthur_的博客</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://pyking.cn/" title="http://pyking.cn/" rel="noopener" target="_blank">1ni的博客</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MisakaTang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+  
+  <script>
+  function leancloudSelector(url) {
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = visitors.getAttribute('id').trim();
+      var title = visitors.getAttribute('data-flag-title').trim();
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+            
+              .catch(error => {
+                console.log('Failed to save visitor count', error);
+              })
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.log('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return element.getAttribute('id').trim();
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.url;
+            var time = item.time;
+            leancloudSelector(url).innerText = time;
+          }
+          for (var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.log('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=M1hXHB2YJ8SC7uPYi7vsCKwU-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id': 'M1hXHB2YJ8SC7uPYi7vsCKwU-gzGzoHsz',
+            'X-LC-Key': '5Ks1w8pWHHdOYOrOYiU4SX1l',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        const localhost = /http:\/\/(localhost|127.0.0.1|0.0.0.0)/;
+        if (localhost.test(document.URL)) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+    
+  
+  <script color="0,0,255" opacity="0.5" zindex="-1" count="99" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
